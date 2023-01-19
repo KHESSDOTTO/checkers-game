@@ -8,15 +8,123 @@
     <title>Document</title>
 </head>
 <body>
-    <section id="pre-game-section" hidden></section>
-        <header></header>
-        <button></button>
+    <section id="pre-game-section">
+        <header><h1>Checkers</h1></header>
+        <button id="playBtn">Play</button>
         <h2><a href="">Game's rules</a></h2>
         <a href="">How to play/commands</a>
-    <section id="game-section">
-        <article id="alerts"></article>
-        <article id="board"></article>
-        <article id="commands"></article>
+    </section>
+    <section id="game-section" hidden>
+        <article id="alerts">
+            <h2>Comments</h2>
+            <ul id="obs-list" class="unformated-list">
+            </ul>
+        </article>
+        <article id="board">
+            <table class="board">
+                <tr>
+                    <td class="white-square" id="11"></td>
+                    <td class="black-square" id="12"></td>
+                    <td class="white-square" id="13"></td>
+                    <td class="black-square" id="14"></td>
+                    <td class="white-square" id="15"></td>
+                    <td class="black-square" id="16"></td>
+                    <td class="white-square" id="17"></td>
+                    <td class="black-square" id="18"></td>
+                </tr>
+                <tr>
+                    <td class="black-square" id="21"></td>
+                    <td class="white-square" id="22"></td>
+                    <td class="black-square" id="23"></td>
+                    <td class="white-square" id="24"></td>
+                    <td class="black-square" id="25"></td>
+                    <td class="white-square" id="26"></td>
+                    <td class="black-square" id="27"></td>
+                    <td class="white-square" id="28"></td>
+                </tr>
+                <tr>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                </tr>
+                <tr>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                </tr>
+                <tr>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                </tr>
+                <tr>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                </tr>
+                <tr>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                </tr>
+                <tr>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                    <td class="black-square"></td>
+                    <td class="white-square"></td>
+                </tr>
+            </table>
+        </article>
+        <article id="commands">
+            <div id="brown-commands">
+                <h3>Brown commands</h3>
+                <button hidden>Up/Left</button>
+                <button hidden>Up/Right</button>
+                <img src="peca-marrom" alt="Peça marrom"/><br>
+                <button>Down/Left</button>
+                <button>Down/Right</button>
+            </div>
+            <div id="white-commands">
+                <h3>White commands</h3>
+                <button>Up/Left</button>
+                <button>Up/Right</button><br>
+                <img src="peca-branca" alt="Peça branca"/>
+                <button hidden>Down/Left</button>
+                <button hidden>Down/Right</button>
+            </div>
+            <footer class="footer">
+                <button>Back to menu</button>
+            </footer>
+        </article>
     </section>
     <script src="./class.js"></script>
     <script src="./script.js"></script>
