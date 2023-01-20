@@ -88,7 +88,7 @@ body * {
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 0;
     border-collapse: collapse;
     border: 5px solid black;
@@ -98,17 +98,21 @@ body * {
 .white-square,
 .black-square {
     width: 3.7em;
-    height: 3.7em;
+    height: 3.63em;
     margin: 0;
     border: 1px solid black;
+    box-sizing: border-box;
+    text-align: center;
 }
 
 .white-square {
     background-color: white;
 }
 
-.white-square {
+.black-square {
     background-color: rgb(51, 51, 51);
+    color: white;
+    font-weight: 500;
 }
 
 #brown-commands {
