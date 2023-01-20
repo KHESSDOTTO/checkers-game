@@ -1,0 +1,9 @@
+1 - Link do deploy do jogo (ver aula do day 5 da week2);
+
+2 - Link para apresentação de slides em servidor online
+    (google slides, prezi, etc) -> apresentação pessoal +
+    apresentação do jogo (guidelines no material);
+
+3 - README no repositório do jogo - precisa ter link
+    do deploy e link da apresentação (README.md):
+    converter para "md" com site "stackedit.io".

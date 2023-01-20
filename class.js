@@ -1,11 +1,29 @@
 class checkers {
     constructor {
-        this.boardDimensions = 8;
+        this.board = [
+            ['white', 'b', 'white', 'b', 'white', 'b', 'white', 'b'],
+            ['b', 'white', 'b', 'white', 'b', 'white', 'b', 'white'],
+            ['white', 'b', 'white', 'b', 'white', 'b', 'white', 'b'],
+            ['black', 'white', 'black', 'white', 'black', 'white', 'black', 'white'],
+            ['white', 'black', 'white', 'black', 'white', 'black', 'white', 'black'],
+            ['white', 'w', 'white', 'w', 'white', 'w', 'white', 'w'],
+            ['w', 'white', 'w', 'white', 'w', 'white', 'w', 'white'],
+            ['white', 'w', 'white', 'w', 'white', 'w', 'white', 'w'],
+        ]
         this.selectedPiece = undefined;
     }
 
     createBoard() {
-        // cria o tabuleiro e posiciona as peças para que o jogo possa começar. Habilita eventListeners nas peças brancas, apenas. 
+        // cria o tabuleiro e posiciona as peças para que o jogo possa começar. Chama white turn. 
+        this.board.forEach((outerElement, outerIndex) => {
+            const boardHTML = document.getElementById('board').querySelector('.board');
+            const newRow = document.createElement("tr");
+            boardHTML.appendChild
+                
+            element.forEach((innerElement, innerIndex) => {
+                const newColumn = document.createElement("td")
+            });
+        });
     }
 
     selectPiece() {
