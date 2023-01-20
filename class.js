@@ -48,8 +48,15 @@ class Checkers {
 
     whiteTurn() {
         // habilita eventListeners nos botões brancos e desabilita dos marrons.
+        let moveBtns = document.querySelectorAll('#brown-commands button');
+        console.log(moveBtns);
 
-    }
+        moveBtns.forEach(x => {
+            x.addEventListener("click", () => {
+                
+            });
+        });
+    };
 
     brownTurn() {
         // habilita eventListeners nos botões marrons e desabilita dos brancos.
