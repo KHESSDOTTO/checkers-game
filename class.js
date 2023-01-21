@@ -48,29 +48,64 @@ class Checkers {
 
     whiteTurn() {
         // habilita eventListeners nos botões brancos e desabilita dos marrons.
-        let moveBtns = document.querySelectorAll('#brown-commands button');
+        let moveBtns = document.querySelectorAll('#white-commands button');
         console.log(moveBtns);
 
         moveBtns.forEach(x => {
             x.addEventListener("click", () => {
-                
+                if (this.isKing(this.selectedPiece)) {
+                    this.moveKing(x.innerHTML);
+                }else {
+                    this.move(x.innerHTML);
+                };
+            });
+        });
+
+        let wrongBtns = document.querySelectorAll('#brown-commands button');
+        console.log(moveBtns);
+
+        moveBtns.forEach(x => {
+            x.addEventListener("click", () => {
+                let message = document.createElement('li');
+                message.innerHTML = 'It is the white pieces turn.';
+                const commentList = document.getElementById('alert').querySelector('ul');
+                commentList.appendChild(message);
             });
         });
     };
 
     brownTurn() {
         // habilita eventListeners nos botões marrons e desabilita dos brancos.
+        let moveBtns = document.querySelectorAll('#brown-commands button');
+        console.log(moveBtns);
+
+        moveBtns.forEach(x => {
+            x.addEventListener("click", () => {
+                if (this.isKing(this.selectedPiece)) {
+                    this.moveKing(x.innerHTML);
+                }else {
+                    this.move(x.innerHTML);
+                };
+            });
+        });
+
+        let wrongBtns = document.querySelectorAll('#white-commands button');
+        console.log(moveBtns);
+
+        moveBtns.forEach(x => {
+            x.addEventListener("click", () => {
+                let message = document.createElement('li');
+                message.innerHTML = 'It is the brown pieces turn.';
+                const commentList = document.getElementById('alert').querySelector('ul');
+                commentList.appendChild(message);
+            });
+        });
     }
 
     move(direction) {
         // movimenta as peças do tabuleiro conforme for solicitado. Chama diversas funções "checks".
         // Avisa caso nenhuma peça tenha sido selecionada quando um botão de movimento for clicado. se for uma dama, chama a
         // função moveKing. passa a vez do jogador após a movimentação ser concluída.
-    }
-
-    checkForMiss() {
-        // checa se houve oportunidade de comer alguma peça adversária não realizada para eliminar a peça que cometeu a falta.
-        // avisa nas observações quando uma peça é "assoprada".
     }
 
     checkForMove() {
@@ -92,6 +127,11 @@ class Checkers {
     chooseCombo() {
         // muda cores para sinalizar evento diferente, registra nas observações que há mais de um combo possível, e pede para o
         // jogador escolher o combo que prefere fazer.
+    }
+
+    checkForMiss() {
+        // checa se houve oportunidade de comer alguma peça adversária não realizada para eliminar a peça que cometeu a falta.
+        // avisa nas observações quando uma peça é "assoprada".
     }
 
     winVerify() {

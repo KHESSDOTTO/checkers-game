@@ -14,7 +14,7 @@ window.addEventListener('load', () => {
             preGameSection.style.display = "block";
         })
         game.whiteTurn();
-        game.winVerify();
+        game.winVerify(); // apenas teste, excluir esta linha
     })
 })
 
