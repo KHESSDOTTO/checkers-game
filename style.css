@@ -30,6 +30,11 @@ body * {
     margin: 5vh;
 }
 
+#game-section ul {
+    list-style-type: none;
+    font-size: 1.2em;
+}
+
 #pre-game-section button {
     width: 10vw;
     height: 2em;
@@ -47,7 +52,7 @@ body * {
 }
 
 #game-section {
-    display: flex;
+    display: none;
     flex-direction: row;
     flex-wrap: nowrap;
     gap: 0;
@@ -95,8 +100,7 @@ body * {
     border-radius: 10px;
 }
 
-.white-square,
-.black-square {
+.square {
     width: 3.7em;
     height: 3.63em;
     margin: 0;
@@ -115,6 +119,12 @@ body * {
     font-weight: 500;
 }
 
+.selected {
+    background-color: rgb(101, 109, 3);
+    color: yellowgreen;
+    font-weight: bolder;
+}
+
 #brown-commands {
     margin-bottom: 45vh;
     text-align: center;
@@ -122,14 +132,6 @@ body * {
 
 #white-commands {
     text-align: center;
-}
-
-.show-tag {
-    display: block;
-}
-
-.hide-tag {
-    display: none;
 }
 
 .footer {

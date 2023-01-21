@@ -12,9 +12,11 @@ window.addEventListener('load', () => {
         backToMenuBtn.addEventListener('click', () => {
             gameSection.style.display = "none";
             preGameSection.style.display = "block";
+            document.getElementById('alerts').querySelector('ul').innerHTML = '';
+            document.getElementById('board').querySelector('table').innerHTML = '';
         })
+
         game.whiteTurn();
-        game.winVerify(); // apenas teste, excluir esta linha
     })
 })
 
