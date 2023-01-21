@@ -139,22 +139,34 @@ class Checkers {
             message.innerHTML = 'You must select a piece to move.';
             const commentList = document.getElementById('alert').querySelector('ul');
             commentList.appendChild(message);
-        };
-        const selectedId = this.selectedPiece.id;
-        const direction = btn.target.innerHTML;
-        console.log(selectedId);
-        console.log(direction);
-        if (this.checkForMove(selectedId, direction)) {
-            if (this.checkForCapture(selectedId, direction)) {
-                this.capture(selectedId, direction);    // capture should return the new id after the capture
-                this.checkForCombo(this.capture(selectedId, direction));
-                this.switchTurns();
-            };
-            if (!this.checkForMiss(selectedId)) {
-                this.simpleMove(selectedId, direction);
-                this.switchTurns();
-            }else{
-                this.switchTurns();
+        }else{
+            const selectedId = this.selectedPiece.id;
+            const direction = btn.target.innerHTML;
+            console.log(selectedId);
+            console.log(direction);
+            if (this.isKing(selectedId)) {
+                this.moveKing(btn);
+            }else {
+                if (this.checkForMove(selectedId, direction)) {
+                    if (this.checkForCapture(selectedId, direction)) {
+                        this.capture(selectedId, direction);    // capture should return the new id after the capture
+                        if (this.checkForCombo(this.capture(selectedId, direction))) {
+                            this.chooseCombo(this.checkForCombo(this.capture(selectedId, direction)));
+                            return;    // chooseCombo precisa desabilitar os event listeners do tabuleiro para manter selecionada a peça
+                                       // atualmente selecionada, habilitar visão somente dos botões referentes ao combo e habilitar
+                                       // eventListener nesses botões para que, ao serem clicados, reabilitem as seleções de outras peças
+                                       // e desabilitem esses novos eventListeners do combo (além de esconder/mostrar os botões adequados).
+                        } else {
+                            this.switchTurns();
+                        };
+                    } else if (this.checkForMiss(selectedId)) {
+                        this.deletePiece();
+                        this.switchTurns();
+                    }else{
+                        this.simpleMove(selectedId, direction);
+                        this.switchTurns();
+                    };
+                };
             };
         };
     };
@@ -177,7 +189,7 @@ class Checkers {
                     const commentList = document.getElementById('alert').querySelector('ul');
                     commentList.appendChild(message);
                     return false;
-            }
+            };
             if (currentPosition.innerHTML === wantedPosition.innerHTML) {
                 return false;
             } else if (wantedPosition.innerHTML === '') {
@@ -207,7 +219,7 @@ class Checkers {
                     const commentList = document.getElementById('alert').querySelector('ul');
                     commentList.appendChild(message);
                     return false;
-            }
+            };
             if (currentPosition.innerHTML === wantedPosition.innerHTML) {
                 return false;
             } else if (wantedPosition.innerHTML === '') {
@@ -237,7 +249,7 @@ class Checkers {
                     const commentList = document.getElementById('alert').querySelector('ul');
                     commentList.appendChild(message);
                     return false;
-            }
+            };
             if (currentPosition.innerHTML === wantedPosition.innerHTML) {
                 return false;
             } else if (wantedPosition.innerHTML === '') {
@@ -267,7 +279,7 @@ class Checkers {
                     const commentList = document.getElementById('alert').querySelector('ul');
                     commentList.appendChild(message);
                     return false;
-            }
+            };
             if (currentPosition.innerHTML === wantedPosition.innerHTML) {
                 return false;
             } else if (wantedPosition.innerHTML === '') {
@@ -289,21 +301,117 @@ class Checkers {
 
     checkForCapture(selectedId, direction) {
         // checa se o movimento solicitado trata-se de uma captura. True ou false se for ou não.
-
-    }
+        if (direction === 'Up-Left') {
+            const targetId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
+            if (document.getElementById(targetId).innerHTML !== '') {
+                return true;
+            }else{
+                return false;
+            };
+        } else if (direction === 'Up-Right') {
+            const targetId = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
+            if (document.getElementById(targetId).innerHTML !== '') {
+                return true;
+            }else{
+                return false;
+            };
+        } else if (direction === 'Down-Left') {
+            const targetId = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
+            if (document.getElementById(targetId).innerHTML !== '') {
+                return true;
+            }else{
+                return false;
+            };
+        } else if (direction === 'Down-Right') {
+            const targetId = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
+            if (document.getElementById(targetId).innerHTML !== '') {
+                return true;
+            }else{
+                return false;
+            };
+        };
+    };
 
     simpleMove(selectedId, direction) {
         // realiza um movimento normal.
-    }
+        if (direction === 'Up-Left') {
+            const currentPosition = document.getElementById(selectedId);
+            const newId = `${Number(selectedId[0]-1)}${Number(selectedId[1])-1}`;
+            const newPosition = document.getElementById(newId);
+            newPosition.innerHTML = currentPosition.innerHTML;
+            this.deletePiece(selectedId);
+            return newId;
+        } else if (direction === 'Up-Right') {
+            const currentPosition = document.getElementById(selectedId);
+            const newId = `${Number(selectedId[0]-1)}${Number(newId[1])+1}`;
+            const newPosition = document.getElementById(wantedId);
+            newPosition.innerHTML = currentPosition.innerHTML;
+            this.deletePiece(selectedId);
+            return newId;
+        } else if (direction === 'Down-Left') {
+            const currentPosition = document.getElementById(selectedId);
+            const newId = `${Number(selectedId[0]+1)}${Number(selectedId[1])-1}`;
+            const newPosition = document.getElementById(newId);
+            newPosition.innerHTML = currentPosition.innerHTML;
+            this.deletePiece(selectedId);
+            return newId;
+        } else if (direction === 'Down-Right') {
+            const currentPosition = document.getElementById(selectedId);
+            const newId = `${Number(selectedId[0]+1)}${Number(selectedId[1])+1}`;
+            const newPosition = document.getElementById(newId);
+            newPosition.innerHTML = currentPosition.innerHTML;
+            this.deletePiece(selectedId);
+            return newId;
+        };
+    };
 
     capture(selectedId, direction) {
         // "pula" um campo para capturar a peça adversária. Apaga o innerHTML do quadrado "pulado". Retorna o novo id para ser
         // referência para o checkForCombo.
-    }
+        if (direction === 'Up-Left') {
+            const currentPosition = document.getElementById(selectedId);
+            const newId = `${Number(selectedId[0])-2}${Number(selectedId[1])-2}`;
+            const newPosition = document.getElementById(newId);
+            const capturedId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
+            newPosition.innerHTML = currentPosition.innerHTML;
+            this.deletePiece(selectedId);
+            this.deletePiece(capturedId);
+            return newId;
+        } else if (direction === 'Up-Right') {
+            const currentPosition = document.getElementById(selectedId);
+            const newId = `${Number(selectedId[0])-2}${Number(selectedId[1])+2}`;
+            const newPosition = document.getElementById(newId);
+            const capturedId = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
+            newPosition.innerHTML = currentPosition.innerHTML;
+            this.deletePiece(selectedId);
+            this.deletePiece(capturedId);
+            return newId;
+        } else if (direction === 'Down-Left') {
+            const currentPosition = document.getElementById(selectedId);
+            const newId = `${Number(selectedId[0])+2}${Number(selectedId[1])-2}`;
+            const newPosition = document.getElementById(newId);
+            const delPieceId = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
+            newPosition.innerHTML = currentPosition.innerHTML;
+            this.deletePiece(selectedId);
+            this.deletePiece(delPieceId);
+            return newId;
+        } else if (direction === 'Down-Right') {
+            const currentPosition = document.getElementById(selectedId);
+            const newId = `${Number(selectedId[0])+2}${Number(selectedId[1])+2}`;
+            const newPosition = document.getElementById(newId);
+            const delPieceId = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
+            newPosition.innerHTML = currentPosition.innerHTML;
+            this.deletePiece(selectedId);
+            this.deletePiece(delPieceId);
+            return newId;
+        };
+    };
 
     checkForCombo(afterCapture) {
         // avalia se após uma captura, existem oportunidades de combo. Caso haja uma, realiza a captura, caso haja mais de uma
         // possibilidade, chama a função chooseCombo.
+        let arrCombo = [];
+        return arrCombo;
     }
 
     chooseCombo() {
@@ -315,6 +423,11 @@ class Checkers {
         // checa se houve oportunidade de comer alguma peça adversária não realizada para eliminar a peça que cometeu a falta.
         // avisa nas observações quando uma peça é "assoprada".
     }
+
+    deletePiece(selectedId) {
+        // "assopra" a peça (quando ela não captura uma adversária -> deve ser chamada caso checkForMiss seja 'true').
+        document.getElementById(selectedId).innerHTML = '';
+    };
 
     winVerify() {
         // verifica o término do jogo após as jogadas whiteTurn e brownTurn. Caso tenha encerrado o jogo. Anuncia na tela
@@ -337,6 +450,7 @@ class Checkers {
 
     formKing() {
         // forma uma dama quando uma peça chega ao extremo vertical oposto do tabuleiro.
+        
     }
 
     isKing() {
