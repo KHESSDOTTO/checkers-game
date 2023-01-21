@@ -63,6 +63,9 @@ class Checkers {
 
         if (clickedSquare.innerHTML !== "") {
             clickedSquare.classList.add('selected');
+            this.selectedPiece = clickedSquare;
+        }else{
+            this.selectedPiece = undefined;
         };
     };
 
