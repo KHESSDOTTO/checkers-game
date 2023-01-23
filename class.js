@@ -16,6 +16,7 @@ class Checkers {
 
     createBoard () {
         // cria o tabuleiro e posiciona as peças para que o jogo possa começar. Chama white turn. 
+        const boardHTML = document.getElementById('board').querySelector('table');
         this.board.forEach((outerElement, outerIndex) => {
             const newRow = document.createElement("tr");
             boardHTML.appendChild(newRow);
@@ -60,37 +61,35 @@ class Checkers {
         this.turn = 0;
     };
 
-    selectPiece(clicked) {
+    selectPiece(clickedSquare) {
         // altera o valor da "this.selectedPiece" para a peça selecionada.
-        const clickedSquare = clicked.target;
-        console.log(clickedSquare);
         console.log(this.turn);
+        console.log(clickedSquare);
         const squares = document.getElementsByClassName("square");
         for(let i = 0;  i < squares.length; i++) {
             squares[i].classList.remove('selected');
             };
-        if (clickedSquare.innerHTML === "w" && this.turn === 0) {
+        if (clickedSquare.innerHTML === "w" && this.turn == 0) {
             clickedSquare.classList.add('selected');
             this.selectedPiece = clickedSquare;
-        }else if(clickedSquare.innerHTML === "b" && this.turn === 1) {
+        }else if(clickedSquare.innerHTML === "b" && this.turn == 1) {
             clickedSquare.classList.add('selected');
             this.selectedPiece = clickedSquare;
         }else{
             this.selectedPiece = undefined;
         };
-        // this.displayCorrectBtns();
-        console.log(game.selectedPiece);
+        console.log(this.selectedPiece);
     };
 
-    displayCorrectBtns() {
-        if (this.selectedPiece.innerHTML === `b`) {
+    displayCorrectBtns(selectedPiece) {
+        if (selectedPiece.innerHTML === `b`) {
             if(this.isKing()) {
                 this.showKingBrownBtns();
             }else{
                 this.showBrownBtns();
             };
         };
-        if (this.selectedPiece.innerHTML === `w`) {
+        if (selectedPiece.innerHTML === `w`) {
             if(this.isKing()) {
                 this.showKingWhiteBtns();
             }else{

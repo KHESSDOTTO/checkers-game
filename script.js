@@ -8,13 +8,14 @@ window.addEventListener('load', () => {
 
         const squares = document.getElementsByClassName("square");
         for (let i = 0; i < squares.length; i++) {
-            squares[i].addEventListener('click', game.selectPiece);
+            squares[i].addEventListener('click', click => {game.selectPiece(click.target)});
+            squares[i].addEventListener('click', click => {game.displayCorrectBtns(click.target)});
         };
 
         game.showGameSection();
 
         const backToMenuBtn = document.getElementById('back-to-menu-btn');
-        backToMenuBtn.addEventListener('click', () => game.hideGameSection);
+        backToMenuBtn.addEventListener('click', game.hideGameSection);
 
         console.log(game.turn);
         console.log(game.selectedPiece);
@@ -23,9 +24,7 @@ window.addEventListener('load', () => {
         moveBtns.forEach(x => {
             x.addEventListener("click", game.move);
         });
-
-        game.switchTurns();
-        
+        game.whiteTurn();        
     })
 })
 
