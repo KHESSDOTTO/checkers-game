@@ -9,7 +9,7 @@ window.addEventListener('load', () => {
         const squares = document.getElementsByClassName("square");
         for (let i = 0; i < squares.length; i++) {
             squares[i].addEventListener('click', click => {game.selectPiece(click.target)});
-            squares[i].addEventListener('click', click => {game.displayCorrectBtns(click.target)});
+            squares[i].addEventListener('click', click => {game.displayCorrectBtns(click.target, game.turn)});
         };
 
         game.showGameSection();
@@ -22,7 +22,7 @@ window.addEventListener('load', () => {
 
         let moveBtns = document.querySelectorAll('button');
         moveBtns.forEach(x => {
-            x.addEventListener("click", game.move);
+            x.addEventListener("click", click => {game.move(click.target)});
         });
         game.whiteTurn();        
     })

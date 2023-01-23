@@ -69,10 +69,10 @@ class Checkers {
         for(let i = 0;  i < squares.length; i++) {
             squares[i].classList.remove('selected');
             };
-        if (clickedSquare.innerHTML === "w" && this.turn == 0) {
+        if (clickedSquare.innerHTML === "w" && this.turn === 0) {
             clickedSquare.classList.add('selected');
             this.selectedPiece = clickedSquare;
-        }else if(clickedSquare.innerHTML === "b" && this.turn == 1) {
+        }else if(clickedSquare.innerHTML === "b" && this.turn === 1) {
             clickedSquare.classList.add('selected');
             this.selectedPiece = clickedSquare;
         }else{
@@ -81,16 +81,19 @@ class Checkers {
         console.log(this.selectedPiece);
     };
 
-    displayCorrectBtns(selectedPiece) {
-        if (selectedPiece.innerHTML === `b`) {
-            if(this.isKing()) {
+    displayCorrectBtns(selectedPiece, turn) {
+        const moveBtns = document.querySelectorAll('#commands button');
+        moveBtns.forEach(cE => cE.classList.add('hidden'));
+        document.getElementById('back-to-menu-btn').classList.remove('hidden');
+        if (selectedPiece.innerHTML.includes(`b`) && turn === 1) {
+            if(this.isKing(selectedPiece)) {
                 this.showKingBrownBtns();
             }else{
                 this.showBrownBtns();
             };
         };
-        if (selectedPiece.innerHTML === `w`) {
-            if(this.isKing()) {
+        if (selectedPiece.innerHTML.includes(`w`) && turn === 0) {
+            if(this.isKing(selectedPiece)) {
                 this.showKingWhiteBtns();
             }else{
                 this.showWhiteBtns();
@@ -99,8 +102,6 @@ class Checkers {
     };
 
     showWhiteBtns() {
-        const moveBtns = document.querySelectorAll('button');
-        moveBtns.forEach(cE => cE.classList.add('hidden'));
         const whiteBtns = document.querySelectorAll('#white-commands button');
         whiteBtns.forEach(cE => {
             if (cE.innerHTML === 'Up-Left' ||
@@ -110,8 +111,6 @@ class Checkers {
     };
 
     showBrownBtns() {
-        const moveBtns = document.querySelectorAll('button');
-        moveBtns.forEach(cE => cE.classList.add('hidden'));
         const brownBtns = document.querySelectorAll('#brown-commands button');
         brownBtns.forEach(cE => {
             if (cE.innerHTML === 'Down-Left' ||
@@ -121,11 +120,6 @@ class Checkers {
     };
 
     showKingWhiteBtns() {
-        const brownBtns = document.querySelectorAll('#brown-commands button');
-        brownBtns.forEach(cE => {
-            cE.classList.add('hidden');
-        });
-
         const whiteBtns = document.querySelectorAll('#white-commands button');
         whiteBtns.forEach(cE => {
             cE.classList.remove('hidden');
@@ -136,11 +130,6 @@ class Checkers {
         const brownBtns = document.querySelectorAll('#brown-commands button');
         brownBtns.forEach(cE => {
             cE.classList.remove('hidden');
-        });
-
-        const whiteBtns = document.querySelectorAll('#white-commands button');
-        whiteBtns.forEach(cE => {
-            cE.classList.add('hidden');
         });
     };
 
@@ -159,6 +148,7 @@ class Checkers {
         let message = document.createElement('li');
         message.innerHTML = "Brown's turn";
         const commentList = document.getElementById('alerts').querySelector('ul');
+        commentList.innerHTML = '';
         commentList.appendChild(message);
         this.winVerify();
     };
@@ -171,28 +161,35 @@ class Checkers {
         };
     };
 
+    clearSelected(selectedPiece) {
+        selectedPiece.classList.remove('selected');
+    };
+
     move(btn) {
         // movimenta as peças do tabuleiro conforme for solicitado. Chama diversas funções "checks".
         // Avisa caso nenhuma peça tenha sido selecionada quando um botão de movimento for clicado. se for uma dama, chama a
         // função moveKing. passa a vez do jogador após a movimentação ser concluída.
         console.log(this.selectedPiece);
-        const direction = btn.target.innerHTML;
+        const direction = btn.innerHTML;
         console.log(direction);
 
         if (this.selectedPiece === undefined) {
             let message = document.createElement('li');
             message.innerHTML = 'You must select a piece to move.';
             const commentList = document.getElementById('alerts').querySelector('ul');
+            commentList.innerHTML = '';
             commentList.appendChild(message);
-        } else if (this.isKing()) {
-            this.moveKing(x.innerHTML);
+        } else if (this.isKing(this.selectedPiece)) {
+            this.moveKing(btn);
         }else {
             const selectedId = this.selectedPiece.id;
             if (this.checkForMove(selectedId, direction)) {
                 if (this.checkForCapture(selectedId, direction)) {
                     this.capture(selectedId, direction);    // capture should return the new id after the capture
+                    this.clearSelected(this.selectedPiece);
                     if (this.checkForCombo(this.capture(selectedId, direction))) {
                         this.chooseCombo(this.checkForCombo(this.capture(selectedId, direction)));
+                        this.clearSelected(this.selectedPiece);
                         return;    // chooseCombo precisa desabilitar os event listeners do tabuleiro para manter selecionada a peça
                                    // atualmente selecionada, habilitar visão somente dos botões referentes ao combo e habilitar
                                    // eventListener nesses botões para que, ao serem clicados, reabilitem as seleções de outras peças
@@ -202,9 +199,11 @@ class Checkers {
                     };
                 } else if (this.checkForMiss(selectedId)) {
                     this.deletePiece();
+                    this.clearSelected(this.selectedPiece);
                     this.switchTurns();
                 }else{
-                    this.simpleMove(selectedId, direction);
+                    this.simpleMove(this.selectedPiece.id, direction);
+                    this.clearSelected(this.selectedPiece);
                     this.switchTurns();
                 };
             };
@@ -219,27 +218,29 @@ class Checkers {
         if (direction === 'Up-Left') {
             const wantedId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
             const currentPosition = document.getElementById(selectedId);
-            const wantedPosition = document.getElementById(wantedId);
-            if (Number(wantedId[0]) < 0 ||
+            if (wantedId[0] == "-" ||
                 Number(wantedId[0]) > 7 ||
-                Number(wantedId[1]) < 0 ||
+                wantedId[1] == "-" ||
                 Number(wantedId[1]) > 7) {
                     let message = document.createElement('li');
                     message.innerHTML = "You can't go off the board.";
                     const commentList = document.getElementById('alerts').querySelector('ul');
+                    commentList.innerHTML = '';
                     commentList.appendChild(message);
                     return false;
             };
+            console.log(wantedId[1]);
+            const wantedPosition = document.getElementById(wantedId);
             if (currentPosition.innerHTML === wantedPosition.innerHTML) {
                 return false;
             } else if (wantedPosition.innerHTML === '') {
                 return true;
             } else {
                 const afterWantedId = `${Number(wantedId[0])-1}${Number(wantedId[1])-1}`;
-                if (Number(afterWantedId[0]) < 0 ||
-                    Number(afterWantedId[0]) > 7 ||
-                    Number(afterWantedId[1]) < 0 ||
-                    Number(afterWantedId[1]) > 7 ||
+                if (wantedId[0] == "-" ||
+                    Number(wantedId[0]) > 7 ||
+                    wantedId[1] == "-" ||
+                    Number(wantedId[1]) > 7 ||
                     document.getElementById(afterWantedId).innerHTML !== '') {
                     return false;
                 } else {
@@ -249,27 +250,28 @@ class Checkers {
         }else if (direction === 'Up-Right') {
             const wantedId = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
             const currentPosition = document.getElementById(selectedId);
-            const wantedPosition = document.getElementById(wantedId);
-            if (Number(wantedId[0]) < 0 ||
+            if (wantedId[0] == "-" ||
                 Number(wantedId[0]) > 7 ||
-                Number(wantedId[1]) < 0 ||
+                wantedId[1] == "-" ||
                 Number(wantedId[1]) > 7) {
                     let message = document.createElement('li');
                     message.innerHTML = "You can't go off the board.";
                     const commentList = document.getElementById('alerts').querySelector('ul');
+                    commentList.innerHTML = '';
                     commentList.appendChild(message);
                     return false;
             };
+            const wantedPosition = document.getElementById(wantedId);
             if (currentPosition.innerHTML === wantedPosition.innerHTML) {
                 return false;
             } else if (wantedPosition.innerHTML === '') {
                 return true;
             } else {
                 const afterWantedId = `${Number(wantedId[0])-1}${Number(wantedId[1])+1}`;
-                if (Number(afterWantedId[0]) < 0 ||
-                    Number(afterWantedId[0]) > 7 ||
-                    Number(afterWantedId[1]) < 0 ||
-                    Number(afterWantedId[1]) > 7 ||
+                if (wantedId[0] == "-" ||
+                    Number(wantedId[0]) > 7 ||
+                    wantedId[1] == "-" ||
+                    Number(wantedId[1]) > 7 ||
                     document.getElementById(afterWantedId).innerHTML !== '') {
                     return false;
                 } else {
@@ -279,27 +281,28 @@ class Checkers {
         }else if (direction === 'Down-Left') {
             const wantedId = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
             const currentPosition = document.getElementById(selectedId);
-            const wantedPosition = document.getElementById(wantedId);
-            if (Number(wantedId[0]) < 0 ||
+            if (wantedId[0] == "-" ||
                 Number(wantedId[0]) > 7 ||
-                Number(wantedId[1]) < 0 ||
+                wantedId[1] == "-" ||
                 Number(wantedId[1]) > 7) {
                     let message = document.createElement('li');
                     message.innerHTML = "You can't go off the board.";
                     const commentList = document.getElementById('alerts').querySelector('ul');
+                    commentList.innerHTML = '';
                     commentList.appendChild(message);
                     return false;
             };
+            const wantedPosition = document.getElementById(wantedId);
             if (currentPosition.innerHTML === wantedPosition.innerHTML) {
                 return false;
             } else if (wantedPosition.innerHTML === '') {
                 return true;
             } else {
                 const afterWantedId = `${Number(wantedId[0])+1}${Number(wantedId[1])-1}`;
-                if (Number(afterWantedId[0]) < 0 ||
-                    Number(afterWantedId[0]) > 7 ||
-                    Number(afterWantedId[1]) < 0 ||
-                    Number(afterWantedId[1]) > 7 ||
+                if (wantedId[0] == "-" ||
+                    Number(wantedId[0]) > 7 ||
+                    wantedId[1] == "-" ||
+                    Number(wantedId[1]) > 7 ||
                     document.getElementById(afterWantedId).innerHTML !== '') {
                     return false;
                 } else {
@@ -309,27 +312,28 @@ class Checkers {
         }else if (direction === 'Down-Right') {
             const wantedId = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
             const currentPosition = document.getElementById(selectedId);
-            const wantedPosition = document.getElementById(wantedId);
-            if (Number(wantedId[0]) < 0 ||
+            if (wantedId[0] == "-" ||
                 Number(wantedId[0]) > 7 ||
-                Number(wantedId[1]) < 0 ||
+                wantedId[1] == "-" ||
                 Number(wantedId[1]) > 7) {
                     let message = document.createElement('li');
                     message.innerHTML = "You can't go off the board.";
                     const commentList = document.getElementById('alerts').querySelector('ul');
+                    commentList.innerHTML = '';
                     commentList.appendChild(message);
                     return false;
             };
+            const wantedPosition = document.getElementById(wantedId);
             if (currentPosition.innerHTML === wantedPosition.innerHTML) {
                 return false;
             } else if (wantedPosition.innerHTML === '') {
                 return true;
             } else {
                 const afterWantedId = `${Number(wantedId[0])+1}${Number(wantedId[1])+1}`;
-                if (Number(afterWantedId[0]) < 0 ||
-                    Number(afterWantedId[0]) > 7 ||
-                    Number(afterWantedId[1]) < 0 ||
-                    Number(afterWantedId[1]) > 7 ||
+                if (wantedId[0] == "-" ||
+                    Number(wantedId[0]) > 7 ||
+                    wantedId[1] == "-" ||
+                    Number(wantedId[1]) > 7 ||
                     document.getElementById(afterWantedId).innerHTML !== '') {
                     return false;
                 } else {
@@ -376,29 +380,53 @@ class Checkers {
         // realiza um movimento normal.
         if (direction === 'Up-Left') {
             const currentPosition = document.getElementById(selectedId);
-            const newId = `${Number(selectedId[0]-1)}${Number(selectedId[1])-1}`;
+            const newId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
             const newPosition = document.getElementById(newId);
             newPosition.innerHTML = currentPosition.innerHTML;
+            console.log('currentPosition:');
+            console.log(selectedId);
+            console.log(currentPosition);
+            console.log('newPosition:');
+            console.log(newId);
+            console.log(newPosition);
             this.deletePiece(selectedId);
             return newId;
         } else if (direction === 'Up-Right') {
             const currentPosition = document.getElementById(selectedId);
-            const newId = `${Number(selectedId[0]-1)}${Number(newId[1])+1}`;
-            const newPosition = document.getElementById(wantedId);
+            const newId = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
+            const newPosition = document.getElementById(newId);
             newPosition.innerHTML = currentPosition.innerHTML;
+            console.log('currentPosition:');
+            console.log(selectedId);
+            console.log(currentPosition);
+            console.log('newPosition:');
+            console.log(newId);
+            console.log(newPosition);
             this.deletePiece(selectedId);
             return newId;
         } else if (direction === 'Down-Left') {
             const currentPosition = document.getElementById(selectedId);
-            const newId = `${Number(selectedId[0]+1)}${Number(selectedId[1])-1}`;
+            const newId = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
             const newPosition = document.getElementById(newId);
+            console.log('currentPosition:');
+            console.log(selectedId);
+            console.log(currentPosition);
+            console.log('newPosition:');
+            console.log(newId);
+            console.log(newPosition);
             newPosition.innerHTML = currentPosition.innerHTML;
             this.deletePiece(selectedId);
             return newId;
         } else if (direction === 'Down-Right') {
             const currentPosition = document.getElementById(selectedId);
-            const newId = `${Number(selectedId[0]+1)}${Number(selectedId[1])+1}`;
+            const newId = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
             const newPosition = document.getElementById(newId);
+            console.log('currentPosition:');
+            console.log(selectedId);
+            console.log(currentPosition);
+            console.log('newPosition:');
+            console.log(newId);
+            console.log(newPosition);
             newPosition.innerHTML = currentPosition.innerHTML;
             this.deletePiece(selectedId);
             return newId;
@@ -510,11 +538,11 @@ class Checkers {
         piece.innerHTML = `k${piece.innerHTML}`
     }
 
-    isKing() {
+    isKing(selectedPiece) {
         // verifica se a peça selecionada é uma dama. Se for, habilita botões de movimento da dama (incluindo botão extra:
         // "Done"), se não, desabilita todos os que possam estar habilitados e mantém apenas o comum (por conta de clique anterior,
         // por exemplo).
-        if (this.selectedPiece.innerHTML.includes('k')) {
+        if (selectedPiece.innerHTML.includes('k')) {
             return true;
         };
         return false;
