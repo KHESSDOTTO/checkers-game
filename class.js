@@ -16,10 +16,6 @@ class Checkers {
 
     createBoard () {
         // cria o tabuleiro e posiciona as peças para que o jogo possa começar. Chama white turn. 
-        const boardHTML = document.getElementById('board').querySelector('table');
-        boardHTML.innerHTML = '';
-        this.selectedPiece = undefined;
-        this.turn = 0;
         this.board.forEach((outerElement, outerIndex) => {
             const newRow = document.createElement("tr");
             boardHTML.appendChild(newRow);
@@ -55,6 +51,13 @@ class Checkers {
         const gameSection = document.getElementById('game-section');
         gameSection.style.display = "none";
         preGameSection.style.display = "block";
+
+        const boardHTML = document.getElementById('board').querySelector('table');
+        const commentList = document.getElementById('alerts').querySelector('ul');
+        commentList.innerHTML = '';
+        boardHTML.innerHTML = '';
+        this.selectedPiece = undefined;
+        this.turn = 0;
     };
 
     selectPiece(clicked) {
