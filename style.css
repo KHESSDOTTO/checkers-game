@@ -140,3 +140,14 @@ body * {
     padding-top: 2vh;
 }
 
+.hidden {
+    display: none;
+}
+
+.display-block {
+    display: block;
+}
+
+.display-flex {
+    display: flex;
+}

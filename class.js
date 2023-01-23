@@ -43,127 +43,168 @@ class Checkers {
         });
     };
 
+    showGameSection() {
+        const preGameSection = document.getElementById('pre-game-section');
+        const gameSection = document.getElementById('game-section');
+        preGameSection.style.display = "none";
+        gameSection.style.display = "flex";
+    };
+
+    hideGameSection() {
+        const preGameSection = document.getElementById('pre-game-section');
+        const gameSection = document.getElementById('game-section');
+        gameSection.style.display = "none";
+        preGameSection.style.display = "block";
+    };
+
     selectPiece(clicked) {
         // altera o valor da "this.selectedPiece" para a peça selecionada.
         const clickedSquare = clicked.target;
+        console.log(clickedSquare);
+        console.log(this.turn);
         const squares = document.getElementsByClassName("square");
         for(let i = 0;  i < squares.length; i++) {
-            squares[i].classList.remove('selected')
+            squares[i].classList.remove('selected');
             };
-        if (clickedSquare.innerHTML !== "") {
+        if (clickedSquare.innerHTML === "w" && this.turn === 0) {
+            clickedSquare.classList.add('selected');
+            this.selectedPiece = clickedSquare;
+        }else if(clickedSquare.innerHTML === "b" && this.turn === 1) {
             clickedSquare.classList.add('selected');
             this.selectedPiece = clickedSquare;
         }else{
             this.selectedPiece = undefined;
         };
-        console.log(this.selectedPiece);
+        // this.displayCorrectBtns();
+        console.log(game.selectedPiece);
+    };
+
+    displayCorrectBtns() {
+        if (this.selectedPiece.innerHTML === `b`) {
+            if(this.isKing()) {
+                this.showKingBrownBtns();
+            }else{
+                this.showBrownBtns();
+            };
+        };
+        if (this.selectedPiece.innerHTML === `w`) {
+            if(this.isKing()) {
+                this.showKingWhiteBtns();
+            }else{
+                this.showWhiteBtns();
+            };
+        };
+    };
+
+    showWhiteBtns() {
+        const moveBtns = document.querySelectorAll('button');
+        moveBtns.forEach(cE => cE.classList.add('hidden'));
+        const whiteBtns = document.querySelectorAll('#white-commands button');
+        whiteBtns.forEach(cE => {
+            if (cE.innerHTML === 'Up-Left' ||
+                cE.innerHTML === 'Up-Right')
+            cE.classList.remove('hidden');
+        });
+    };
+
+    showBrownBtns() {
+        const moveBtns = document.querySelectorAll('button');
+        moveBtns.forEach(cE => cE.classList.add('hidden'));
+        const brownBtns = document.querySelectorAll('#brown-commands button');
+        brownBtns.forEach(cE => {
+            if (cE.innerHTML === 'Down-Left' ||
+                cE.innerHTML === 'Down-Right')
+            cE.classList.remove('hidden');
+        });
+    };
+
+    showKingWhiteBtns() {
+        const brownBtns = document.querySelectorAll('#brown-commands button');
+        brownBtns.forEach(cE => {
+            cE.classList.add('hidden');
+        });
+
+        const whiteBtns = document.querySelectorAll('#white-commands button');
+        whiteBtns.forEach(cE => {
+            cE.classList.remove('hidden');
+        });
+    };
+
+    showKingBrownBtns() {
+        const brownBtns = document.querySelectorAll('#brown-commands button');
+        brownBtns.forEach(cE => {
+            cE.classList.remove('hidden');
+        });
+
+        const whiteBtns = document.querySelectorAll('#white-commands button');
+        whiteBtns.forEach(cE => {
+            cE.classList.add('hidden');
+        });
     };
 
     whiteTurn() {
-        // habilita eventListeners nos botões brancos e desabilita dos marrons.
+        this.turn = 0;
         let message = document.createElement('li');
         message.innerHTML = "White's turn";
         const commentList = document.getElementById('alerts').querySelector('ul');
+        commentList.innerHTML = '';
         commentList.appendChild(message);
-        let moveBtns = document.querySelectorAll('#white-commands button');
-        console.log(this.selectedPiece);
-        moveBtns.forEach(x => {
-            x.addEventListener("click", () => {
-                console.log(this.selectedPiece);
-                if (this.selectedPiece === undefined) {
-                    let message = document.createElement('li');
-                    message.innerHTML = 'You must select a piece to move.';
-                    const commentList = document.getElementById('alerts').querySelector('ul');
-                    commentList.innerHTML = '';
-                    commentList.appendChild(message);
-                } else if (this.isKing(this.selectedPiece)) {
-                    this.moveKing(x.innerHTML);
-                }else {
-                    this.move(x.innerHTML);
-                };
-            });
-        });
-        let wrongBtns = document.querySelectorAll('#brown-commands button');
-        wrongBtns.forEach(x => {
-            x.addEventListener("click", () => {
-                let message = document.createElement('li');
-                message.innerHTML = 'It is the white pieces turn.';
-                const commentList = document.getElementById('alerts').querySelector('ul');
-                commentList.innerHTML = '';
-                commentList.appendChild(message);
-            });
-        });
-        this.turn = 1;
         this.winVerify();
     };
 
     brownTurn() {
-        // habilita eventListeners nos botões marrons e desabilita dos brancos.
+        this.turn = 1;
         let message = document.createElement('li');
         message.innerHTML = "Brown's turn";
         const commentList = document.getElementById('alerts').querySelector('ul');
         commentList.appendChild(message);
-        let moveBtns = document.querySelectorAll('#brown-commands button');
-        console.log(moveBtns);
-        moveBtns.forEach(x => {
-            x.addEventListener("click", () => {
-                if (this.selectedPiece === undefined) {
-                    let message = document.createElement('li');
-                    message.innerHTML = 'You must select a piece to move.';
-                    const commentList = document.getElementById('alerts').querySelector('ul');
-                    commentList.appendChild(message);
-                } else if (this.isKing()) {
-                    this.moveKing(x.innerHTML);
-                }else {
-                    this.move(x.innerHTML);
-                };
-            });
-        });
-        let wrongBtns = document.querySelectorAll('#white-commands button');
-        console.log(moveBtns);
-        wrongBtns.forEach(x => {
-            x.addEventListener("click", () => {
-                let message = document.createElement('li');
-                message.innerHTML = 'It is the brown pieces turn.';
-                const commentList = document.getElementById('alerts').querySelector('ul');
-                commentList.appendChild(message);
-            });
-        });
-        this.turn = 0;
         this.winVerify();
     };
 
     switchTurns () {
-        if (this.turn === 0) {
+        if (this.turn === 1) {
             this.whiteTurn();
         }else{
             this.brownTurn();
         };
     };
 
-    move(direction) {
+    move(btn) {
         // movimenta as peças do tabuleiro conforme for solicitado. Chama diversas funções "checks".
         // Avisa caso nenhuma peça tenha sido selecionada quando um botão de movimento for clicado. se for uma dama, chama a
         // função moveKing. passa a vez do jogador após a movimentação ser concluída.
-        const selectedId = this.selectedPiece.id;
-        if (this.checkForMove(selectedId, direction)) {
-            if (this.checkForCapture(selectedId, direction)) {
-                this.capture(selectedId, direction);    // capture should return the new id after the capture
-                if (this.checkForCombo(this.capture(selectedId, direction))) {
-                    this.chooseCombo(this.checkForCombo(this.capture(selectedId, direction)));
-                    return;    // chooseCombo precisa desabilitar os event listeners do tabuleiro para manter selecionada a peça
-                               // atualmente selecionada, habilitar visão somente dos botões referentes ao combo e habilitar
-                               // eventListener nesses botões para que, ao serem clicados, reabilitem as seleções de outras peças
-                               // e desabilitem esses novos eventListeners do combo (além de esconder/mostrar os botões adequados).
-                } else {
-                this.switchTurns();
+        console.log(this.selectedPiece);
+        const direction = btn.target.innerHTML;
+        console.log(direction);
+
+        if (this.selectedPiece === undefined) {
+            let message = document.createElement('li');
+            message.innerHTML = 'You must select a piece to move.';
+            const commentList = document.getElementById('alerts').querySelector('ul');
+            commentList.appendChild(message);
+        } else if (this.isKing()) {
+            this.moveKing(x.innerHTML);
+        }else {
+            const selectedId = this.selectedPiece.id;
+            if (this.checkForMove(selectedId, direction)) {
+                if (this.checkForCapture(selectedId, direction)) {
+                    this.capture(selectedId, direction);    // capture should return the new id after the capture
+                    if (this.checkForCombo(this.capture(selectedId, direction))) {
+                        this.chooseCombo(this.checkForCombo(this.capture(selectedId, direction)));
+                        return;    // chooseCombo precisa desabilitar os event listeners do tabuleiro para manter selecionada a peça
+                                   // atualmente selecionada, habilitar visão somente dos botões referentes ao combo e habilitar
+                                   // eventListener nesses botões para que, ao serem clicados, reabilitem as seleções de outras peças
+                                   // e desabilitem esses novos eventListeners do combo (além de esconder/mostrar os botões adequados).
+                    } else {
+                    this.switchTurns();
+                    };
+                } else if (this.checkForMiss(selectedId)) {
+                    this.deletePiece();
+                    this.switchTurns();
+                }else{
+                    this.simpleMove(selectedId, direction);
+                    this.switchTurns();
                 };
-            } else if (this.checkForMiss(selectedId)) {
-                this.deletePiece();
-                this.switchTurns();
-            }else{
-                this.simpleMove(selectedId, direction);
-                this.switchTurns();
             };
         };
     };
@@ -428,38 +469,43 @@ class Checkers {
 
     winVerify() {
         // verifica o término do jogo após as jogadas whiteTurn e brownTurn. Caso tenha encerrado o jogo. Anuncia na tela
-        let browns = 0;
-        let whites = 0;
-        const squares = document.getElementById('game-section').querySelector('table').children;
-        squares.forEach(element => {
-            if (element.innerHTML === 'b') {
-                browns = 1;
-            } else if (element.innerHTML === 'w') {
-                whites = 1;
-            };
-        });
-        if (browns === 0) {
-            alert(`White player wins!`);
-            const preGameSection = document.getElementById('pre-game-section');
-            const gameSection = document.getElementById('game-section');
-            gameSection.style.display = "none";
-            preGameSection.style.display = "block";
-            document.getElementById('alerts').querySelector('ul').innerHTML = '';
-            document.getElementById('board').querySelector('table').innerHTML = '';
-        } else if (white === 0) {
-            alert(`Brown player wins!`);
-            const preGameSection = document.getElementById('pre-game-section');
-            const gameSection = document.getElementById('game-section');
-            gameSection.style.display = "none";
-            preGameSection.style.display = "block";
-            document.getElementById('alerts').querySelector('ul').innerHTML = '';
-            document.getElementById('board').querySelector('table').innerHTML = '';
-        };
+        // let browns = 0;
+        // let whites = 0;
+        // const squares = document.getElementById('game-section').querySelector('table').children;
+        // console.log(squares);
+        // for (let i = 0; i < squares.length; i++) {
+        //     if (squares[i].innerHTML === 'b') {
+        //         browns = 1;
+        //     } else if (squares[i].innerHTML === 'w') {
+        //         whites = 1;
+        //     };
+        // };
+        // if (browns === 0) {
+        //     alert(`White player wins!`);
+        //     const preGameSection = document.getElementById('pre-game-section');
+        //     const gameSection = document.getElementById('game-section');
+        //     gameSection.style.display = "none";
+        //     preGameSection.style.display = "block";
+        //     document.getElementById('alerts').querySelector('ul').innerHTML = '';
+        //     document.getElementById('board').querySelector('table').innerHTML = '';
+        // } else if (white === 0) {
+        //     alert(`Brown player wins!`);
+        //     const preGameSection = document.getElementById('pre-game-section');
+        //     const gameSection = document.getElementById('game-section');
+        //     gameSection.style.display = "none";
+        //     preGameSection.style.display = "block";
+        //     document.getElementById('alerts').querySelector('ul').innerHTML = '';
+        //     document.getElementById('board').querySelector('table').innerHTML = '';
+        // };
     };
 
-    formKing() {
+    checkFormKing() {
+        // checa se uma dama deve ser formada.
+    };
+
+    formKing(piece) {
         // forma uma dama quando uma peça chega ao extremo vertical oposto do tabuleiro.
-        
+        piece.innerHTML = `k${piece.innerHTML}`
     }
 
     isKing() {
