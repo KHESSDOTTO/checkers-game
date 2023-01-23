@@ -40,10 +40,6 @@ class Checkers {
                     newColumn.classList.add('black-square');
                 };
             });
-            const squares = document.getElementsByClassName("square");
-            for (let i = 0; i < squares.length; i++) {
-                squares[i].addEventListener('click', this.selectPiece);
-            };
         });
     };
 
@@ -51,17 +47,16 @@ class Checkers {
         // altera o valor da "this.selectedPiece" para a peça selecionada.
         const clickedSquare = clicked.target;
         const squares = document.getElementsByClassName("square");
-        if (document.getElementById("game-section").style.display === 'flex') {
-            for(let i = 0;  i < squares.length; i++) {
-                squares[i].classList.remove('selected')
+        for(let i = 0;  i < squares.length; i++) {
+            squares[i].classList.remove('selected')
             };
-        };
         if (clickedSquare.innerHTML !== "") {
             clickedSquare.classList.add('selected');
             this.selectedPiece = clickedSquare;
         }else{
             this.selectedPiece = undefined;
         };
+        console.log(this.selectedPiece);
     };
 
     whiteTurn() {
@@ -71,9 +66,17 @@ class Checkers {
         const commentList = document.getElementById('alerts').querySelector('ul');
         commentList.appendChild(message);
         let moveBtns = document.querySelectorAll('#white-commands button');
+        console.log(this.selectedPiece);
         moveBtns.forEach(x => {
             x.addEventListener("click", () => {
-                if (this.isKing(this.selectedPiece)) {
+                console.log(this.selectedPiece);
+                if (this.selectedPiece === undefined) {
+                    let message = document.createElement('li');
+                    message.innerHTML = 'You must select a piece to move.';
+                    const commentList = document.getElementById('alerts').querySelector('ul');
+                    commentList.innerHTML = '';
+                    commentList.appendChild(message);
+                } else if (this.isKing(this.selectedPiece)) {
                     this.moveKing(x.innerHTML);
                 }else {
                     this.move(x.innerHTML);
@@ -81,28 +84,35 @@ class Checkers {
             });
         });
         let wrongBtns = document.querySelectorAll('#brown-commands button');
-        moveBtns.forEach(x => {
+        wrongBtns.forEach(x => {
             x.addEventListener("click", () => {
                 let message = document.createElement('li');
                 message.innerHTML = 'It is the white pieces turn.';
-                const commentList = document.getElementById('alert').querySelector('ul');
+                const commentList = document.getElementById('alerts').querySelector('ul');
+                commentList.innerHTML = '';
                 commentList.appendChild(message);
             });
         });
         this.turn = 1;
+        this.winVerify();
     };
 
     brownTurn() {
         // habilita eventListeners nos botões marrons e desabilita dos brancos.
         let message = document.createElement('li');
         message.innerHTML = "Brown's turn";
-        const commentList = document.getElementById('alert').querySelector('ul');
+        const commentList = document.getElementById('alerts').querySelector('ul');
         commentList.appendChild(message);
         let moveBtns = document.querySelectorAll('#brown-commands button');
         console.log(moveBtns);
         moveBtns.forEach(x => {
             x.addEventListener("click", () => {
-                if (this.isKing(this.selectedPiece)) {
+                if (this.selectedPiece === undefined) {
+                    let message = document.createElement('li');
+                    message.innerHTML = 'You must select a piece to move.';
+                    const commentList = document.getElementById('alerts').querySelector('ul');
+                    commentList.appendChild(message);
+                } else if (this.isKing()) {
                     this.moveKing(x.innerHTML);
                 }else {
                     this.move(x.innerHTML);
@@ -111,15 +121,16 @@ class Checkers {
         });
         let wrongBtns = document.querySelectorAll('#white-commands button');
         console.log(moveBtns);
-        moveBtns.forEach(x => {
+        wrongBtns.forEach(x => {
             x.addEventListener("click", () => {
                 let message = document.createElement('li');
                 message.innerHTML = 'It is the brown pieces turn.';
-                const commentList = document.getElementById('alert').querySelector('ul');
+                const commentList = document.getElementById('alerts').querySelector('ul');
                 commentList.appendChild(message);
             });
         });
         this.turn = 0;
+        this.winVerify();
     };
 
     switchTurns () {
@@ -130,43 +141,29 @@ class Checkers {
         };
     };
 
-    move(btn) {
+    move(direction) {
         // movimenta as peças do tabuleiro conforme for solicitado. Chama diversas funções "checks".
         // Avisa caso nenhuma peça tenha sido selecionada quando um botão de movimento for clicado. se for uma dama, chama a
         // função moveKing. passa a vez do jogador após a movimentação ser concluída.
-        if (this.selectedPiece === undefined) {
-            let message = document.createElement('li');
-            message.innerHTML = 'You must select a piece to move.';
-            const commentList = document.getElementById('alert').querySelector('ul');
-            commentList.appendChild(message);
-        }else{
-            const selectedId = this.selectedPiece.id;
-            const direction = btn.target.innerHTML;
-            console.log(selectedId);
-            console.log(direction);
-            if (this.isKing(selectedId)) {
-                this.moveKing(btn);
-            }else {
-                if (this.checkForMove(selectedId, direction)) {
-                    if (this.checkForCapture(selectedId, direction)) {
-                        this.capture(selectedId, direction);    // capture should return the new id after the capture
-                        if (this.checkForCombo(this.capture(selectedId, direction))) {
-                            this.chooseCombo(this.checkForCombo(this.capture(selectedId, direction)));
-                            return;    // chooseCombo precisa desabilitar os event listeners do tabuleiro para manter selecionada a peça
-                                       // atualmente selecionada, habilitar visão somente dos botões referentes ao combo e habilitar
-                                       // eventListener nesses botões para que, ao serem clicados, reabilitem as seleções de outras peças
-                                       // e desabilitem esses novos eventListeners do combo (além de esconder/mostrar os botões adequados).
-                        } else {
-                            this.switchTurns();
-                        };
-                    } else if (this.checkForMiss(selectedId)) {
-                        this.deletePiece();
-                        this.switchTurns();
-                    }else{
-                        this.simpleMove(selectedId, direction);
-                        this.switchTurns();
-                    };
+        const selectedId = this.selectedPiece.id;
+        if (this.checkForMove(selectedId, direction)) {
+            if (this.checkForCapture(selectedId, direction)) {
+                this.capture(selectedId, direction);    // capture should return the new id after the capture
+                if (this.checkForCombo(this.capture(selectedId, direction))) {
+                    this.chooseCombo(this.checkForCombo(this.capture(selectedId, direction)));
+                    return;    // chooseCombo precisa desabilitar os event listeners do tabuleiro para manter selecionada a peça
+                               // atualmente selecionada, habilitar visão somente dos botões referentes ao combo e habilitar
+                               // eventListener nesses botões para que, ao serem clicados, reabilitem as seleções de outras peças
+                               // e desabilitem esses novos eventListeners do combo (além de esconder/mostrar os botões adequados).
+                } else {
+                this.switchTurns();
                 };
+            } else if (this.checkForMiss(selectedId)) {
+                this.deletePiece();
+                this.switchTurns();
+            }else{
+                this.simpleMove(selectedId, direction);
+                this.switchTurns();
             };
         };
     };
@@ -186,7 +183,7 @@ class Checkers {
                 Number(wantedId[1]) > 7) {
                     let message = document.createElement('li');
                     message.innerHTML = "You can't go off the board.";
-                    const commentList = document.getElementById('alert').querySelector('ul');
+                    const commentList = document.getElementById('alerts').querySelector('ul');
                     commentList.appendChild(message);
                     return false;
             };
@@ -216,7 +213,7 @@ class Checkers {
                 Number(wantedId[1]) > 7) {
                     let message = document.createElement('li');
                     message.innerHTML = "You can't go off the board.";
-                    const commentList = document.getElementById('alert').querySelector('ul');
+                    const commentList = document.getElementById('alerts').querySelector('ul');
                     commentList.appendChild(message);
                     return false;
             };
@@ -246,7 +243,7 @@ class Checkers {
                 Number(wantedId[1]) > 7) {
                     let message = document.createElement('li');
                     message.innerHTML = "You can't go off the board.";
-                    const commentList = document.getElementById('alert').querySelector('ul');
+                    const commentList = document.getElementById('alerts').querySelector('ul');
                     commentList.appendChild(message);
                     return false;
             };
@@ -276,7 +273,7 @@ class Checkers {
                 Number(wantedId[1]) > 7) {
                     let message = document.createElement('li');
                     message.innerHTML = "You can't go off the board.";
-                    const commentList = document.getElementById('alert').querySelector('ul');
+                    const commentList = document.getElementById('alerts').querySelector('ul');
                     commentList.appendChild(message);
                     return false;
             };
@@ -437,14 +434,26 @@ class Checkers {
         squares.forEach(element => {
             if (element.innerHTML === 'b') {
                 browns = 1;
-            }else if (element.innerHTML === 'w') {
+            } else if (element.innerHTML === 'w') {
                 whites = 1;
-            }
+            };
         });
         if (browns === 0) {
             alert(`White player wins!`);
-        }else if (white === 0) {
+            const preGameSection = document.getElementById('pre-game-section');
+            const gameSection = document.getElementById('game-section');
+            gameSection.style.display = "none";
+            preGameSection.style.display = "block";
+            document.getElementById('alerts').querySelector('ul').innerHTML = '';
+            document.getElementById('board').querySelector('table').innerHTML = '';
+        } else if (white === 0) {
             alert(`Brown player wins!`);
+            const preGameSection = document.getElementById('pre-game-section');
+            const gameSection = document.getElementById('game-section');
+            gameSection.style.display = "none";
+            preGameSection.style.display = "block";
+            document.getElementById('alerts').querySelector('ul').innerHTML = '';
+            document.getElementById('board').querySelector('table').innerHTML = '';
         };
     };
 
@@ -457,7 +466,11 @@ class Checkers {
         // verifica se a peça selecionada é uma dama. Se for, habilita botões de movimento da dama (incluindo botão extra:
         // "Done"), se não, desabilita todos os que possam estar habilitados e mantém apenas o comum (por conta de clique anterior,
         // por exemplo).
-    }
+        if (this.selectedPiece.innerHTML.includes('k')) {
+            return true;
+        };
+        return false;
+    };
 
     moveKing() {
         // "move" com flexibilidade para andar mais de uma casa na mesma direção.
