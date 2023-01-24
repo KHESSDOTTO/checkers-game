@@ -22,9 +22,11 @@ window.addEventListener('load', () => {
 
         let moveBtns = document.querySelectorAll('button');
         moveBtns.forEach(x => {
+            if (x.id !== 'back-to-menu-btn') {
             x.addEventListener("click", click => {game.move(click.target)});
+            };
         });
         game.whiteTurn();        
-    })
-})
+    });
+});
 

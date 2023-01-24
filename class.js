@@ -64,7 +64,6 @@ class Checkers {
     selectPiece(clickedSquare) {
         // altera o valor da "this.selectedPiece" para a peça selecionada.
         console.log(this.turn);
-        console.log(clickedSquare);
         const squares = document.getElementsByClassName("square");
         for(let i = 0;  i < squares.length; i++) {
             squares[i].classList.remove('selected');
@@ -176,7 +175,6 @@ class Checkers {
         // movimenta as peças do tabuleiro conforme for solicitado. Chama diversas funções "checks".
         // Avisa caso nenhuma peça tenha sido selecionada quando um botão de movimento for clicado. se for uma dama, chama a
         // função moveKing. passa a vez do jogador após a movimentação ser concluída.
-        console.log(this.selectedPiece);
         const direction = btn.innerHTML;
         console.log(direction);
 
@@ -188,12 +186,10 @@ class Checkers {
             commentList.appendChild(message);
         } else if (this.isKing(this.selectedPiece)) {
             this.moveKing(btn);
-        }else {
+        } else {
             const selectedId = this.selectedPiece.id;
             if (this.checkForMove(selectedId, direction)) {
                 if (this.checkForCapture(selectedId, direction)) {
-                    this.capture(selectedId, direction);    // capture should return the new id after the capture
-                    this.clearSelected(this.selectedPiece);
                     if (this.checkForCombo(this.capture(selectedId, direction))) {
                         this.chooseCombo(this.checkForCombo(this.capture(selectedId, direction)));
                         this.clearSelected(this.selectedPiece);
@@ -202,6 +198,7 @@ class Checkers {
                                    // eventListener nesses botões para que, ao serem clicados, reabilitem as seleções de outras peças
                                    // e desabilitem esses novos eventListeners do combo (além de esconder/mostrar os botões adequados).
                     } else {
+                        this.clearSelected(this.selectedPiece);
                         this.hideMoveBtns();
                         this.switchTurns();
                     };
@@ -286,117 +283,96 @@ class Checkers {
 
     checkForCapture(selectedId, direction) {
         // checa se o movimento solicitado trata-se de uma captura. True ou false se for ou não.
-        if (direction === 'Up-Left') {
-            const targetId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
-            if (document.getElementById(targetId).innerHTML !== '') {
-                return true;
-            }else{
-                return false;
-            };
-        } else if (direction === 'Up-Right') {
-            const targetId = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
-            if (document.getElementById(targetId).innerHTML !== '') {
-                return true;
-            }else{
-                return false;
-            };
-        } else if (direction === 'Down-Left') {
-            const targetId = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
-            if (document.getElementById(targetId).innerHTML !== '') {
-                return true;
-            }else{
-                return false;
-            };
-        } else if (direction === 'Down-Right') {
-            const targetId = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
-            if (document.getElementById(targetId).innerHTML !== '') {
-                return true;
-            }else{
-                return false;
-            };
+        let targetId;
+        switch (direction) {
+            case 'Up-Left':
+                targetId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
+                break;
+            case 'Up-Right':
+                targetId = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
+                break;
+            case 'Down-Left':
+                targetId = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
+                break;
+            case 'Down-Right':
+                targetId = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
+                break;
+        };
+        if (document.getElementById(targetId).innerHTML !== '') {
+            return true;
+        }else{
+            return false;
         };
     };
 
     simpleMove(selectedId, direction) {
         // realiza um movimento normal.
-        if (direction === 'Up-Left') {
-            const currentPosition = document.getElementById(selectedId);
-            const newId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
-            const newPosition = document.getElementById(newId);
-            newPosition.innerHTML = currentPosition.innerHTML;
-            this.deletePiece(selectedId);
-            return newId;
-        } else if (direction === 'Up-Right') {
-            const currentPosition = document.getElementById(selectedId);
-            const newId = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
-            const newPosition = document.getElementById(newId);
-            newPosition.innerHTML = currentPosition.innerHTML;
-            this.deletePiece(selectedId);
-            return newId;
-        } else if (direction === 'Down-Left') {
-            const currentPosition = document.getElementById(selectedId);
-            const newId = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
-            const newPosition = document.getElementById(newId);
-            newPosition.innerHTML = currentPosition.innerHTML;
-            this.deletePiece(selectedId);
-            return newId;
-        } else if (direction === 'Down-Right') {
-            const currentPosition = document.getElementById(selectedId);
-            const newId = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
-            const newPosition = document.getElementById(newId);
-            newPosition.innerHTML = currentPosition.innerHTML;
-            this.deletePiece(selectedId);
-            return newId;
+        let newId;
+        switch (direction) {
+            case 'Up-Left':
+                newId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
+                break;
+            case 'Up-Right':
+                newId = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
+                break;
+            case 'Down-Left':
+                newId = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
+                break;
+            case 'Down-Right':
+                newId = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
+                break;
         };
+        const newPosition = document.getElementById(newId);
+        const currentPosition = document.getElementById(selectedId);
+        newPosition.innerHTML = currentPosition.innerHTML;
+        // currentPosition.innerHTML = 'k'
+        this.deletePiece(selectedId);
+        return newId;
     };
 
     capture(selectedId, direction) {
         // "pula" um campo para capturar a peça adversária. Apaga o innerHTML do quadrado "pulado". Retorna o novo id para ser
         // referência para o checkForCombo.
-        if (direction === 'Up-Left') {
-            const currentPosition = document.getElementById(selectedId);
-            const newId = `${Number(selectedId[0])-2}${Number(selectedId[1])-2}`;
-            const newPosition = document.getElementById(newId);
-            const capturedId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
-            newPosition.innerHTML = currentPosition.innerHTML;
-            this.deletePiece(selectedId);
-            this.deletePiece(capturedId);
-            return newId;
-        } else if (direction === 'Up-Right') {
-            const currentPosition = document.getElementById(selectedId);
-            const newId = `${Number(selectedId[0])-2}${Number(selectedId[1])+2}`;
-            const newPosition = document.getElementById(newId);
-            const capturedId = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
-            newPosition.innerHTML = currentPosition.innerHTML;
-            this.deletePiece(selectedId);
-            this.deletePiece(capturedId);
-            return newId;
-        } else if (direction === 'Down-Left') {
-            const currentPosition = document.getElementById(selectedId);
-            const newId = `${Number(selectedId[0])+2}${Number(selectedId[1])-2}`;
-            const newPosition = document.getElementById(newId);
-            const delPieceId = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
-            newPosition.innerHTML = currentPosition.innerHTML;
-            this.deletePiece(selectedId);
-            this.deletePiece(delPieceId);
-            return newId;
-        } else if (direction === 'Down-Right') {
-            const currentPosition = document.getElementById(selectedId);
-            const newId = `${Number(selectedId[0])+2}${Number(selectedId[1])+2}`;
-            const newPosition = document.getElementById(newId);
-            const delPieceId = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
-            newPosition.innerHTML = currentPosition.innerHTML;
-            this.deletePiece(selectedId);
-            this.deletePiece(delPieceId);
-            return newId;
+        console.log('Running once');
+        let capturedId;
+        let newId;
+        switch (direction) {
+            case 'Up-Left':
+                capturedId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
+                newId = `${Number(capturedId[0])-1}${Number(capturedId[1])-1}`;
+                break;
+            case 'Up-Right':
+                capturedId = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
+                newId = `${Number(selectedId[0])-2}${Number(selectedId[1])+2}`;
+                break;
+            case 'Down-Left':
+                capturedId = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
+                newId = `${Number(selectedId[0])+2}${Number(selectedId[1])-2}`;
+                break;
+            case 'Down-Right':
+                capturedId = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
+                newId = `${Number(selectedId[0])+2}${Number(selectedId[1])+2}`;
+                break;
         };
+        const newPosition = document.getElementById(newId);
+        const currentPosition = document.getElementById(selectedId);
+        newPosition.classList.add('selected');
+        newPosition.innerHTML = currentPosition.innerHTML;
+        console.log('selectedId');
+        console.log(selectedId);
+
+        this.selectedPiece = newPosition;
+        this.clearSelected(currentPosition);
+        this.deletePiece(capturedId);
+        this.deletePiece(selectedId);
+        return newId;
     };
 
     checkForCombo(afterCapture) {
         // avalia se após uma captura, existem oportunidades de combo. Caso haja uma, realiza a captura, caso haja mais de uma
         // possibilidade, chama a função chooseCombo.
         let arrCombo = [];
-        return arrCombo;
+        return false;
     }
 
     chooseCombo() {
