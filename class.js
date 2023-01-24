@@ -69,10 +69,10 @@ class Checkers {
         for(let i = 0;  i < squares.length; i++) {
             squares[i].classList.remove('selected');
             };
-        if (clickedSquare.innerHTML === "w" && this.turn === 0) {
+        if (clickedSquare.innerHTML.includes("w") && this.turn === 0) {
             clickedSquare.classList.add('selected');
             this.selectedPiece = clickedSquare;
-        }else if(clickedSquare.innerHTML === "b" && this.turn === 1) {
+        }else if(clickedSquare.innerHTML.includes("b") && this.turn === 1) {
             clickedSquare.classList.add('selected');
             this.selectedPiece = clickedSquare;
         }else{
@@ -102,8 +102,11 @@ class Checkers {
 
     hideMoveBtns() {
         const moveBtns = document.querySelectorAll('#commands button');
-        moveBtns.forEach(cE => cE.classList.add('hidden'));
-    }
+        moveBtns.forEach(cE => { if(cE.id !== 'back-to-menu-btn') {
+                cE.classList.add('hidden')
+            };
+        });
+    };
 
     showWhiteBtns() {
         const whiteBtns = document.querySelectorAll('#white-commands button');
@@ -217,6 +220,14 @@ class Checkers {
         };
     };
 
+    displayMessageInvalidMove() {
+        let message = document.createElement('li');
+        message.innerHTML = "Invalid move.";
+        const commentList = document.getElementById('alerts').querySelector('ul');
+        commentList.innerHTML = '';
+        commentList.appendChild(message);
+    };
+
     checkForMove(selectedId, direction) {
         // checa se o movimento solicitado pode ser feito analisando se o deslocamento será feito dentro do tabuleiro, ou
         // quando não há duas peças adversárias diretamente na direção, ou apenas uma sendo que o próximo campo está fora do
@@ -229,18 +240,16 @@ class Checkers {
                 Number(wantedId[0]) > 7 ||
                 wantedId[1] == "-" ||
                 Number(wantedId[1]) > 7) {
-                    let message = document.createElement('li');
-                    message.innerHTML = "You can't go off the board.";
-                    const commentList = document.getElementById('alerts').querySelector('ul');
-                    commentList.innerHTML = '';
-                    commentList.appendChild(message);
+                    this.displayMessageInvalidMove(); // off the board
                     return false;
             };
             const wantedPosition = document.getElementById(wantedId);
-            if (currentPosition.innerHTML === wantedPosition.innerHTML) {
-                return false;
-            } else if (wantedPosition.innerHTML === '') {
+            if (wantedPosition.innerHTML === '') {
                 return true;
+            } else if (currentPosition.innerHTML.includes(wantedPosition.innerHTML) ||
+                wantedPosition.innerHTML.includes(currentPosition.innerHTML)) {
+                this.displayMessageInvalidMove(); // same player's piece
+                return false; 
             } else {
                 const afterWantedId = `${Number(wantedId[0])-1}${Number(wantedId[1])-1}`;
                 if (wantedId[0] == "-" ||
@@ -248,6 +257,7 @@ class Checkers {
                     wantedId[1] == "-" ||
                     Number(wantedId[1]) > 7 ||
                     document.getElementById(afterWantedId).innerHTML !== '') {
+                    this.displayMessageInvalidMove(); // off the board after capture
                     return false;
                 } else {
                     return true;
@@ -260,18 +270,16 @@ class Checkers {
                 Number(wantedId[0]) > 7 ||
                 wantedId[1] == "-" ||
                 Number(wantedId[1]) > 7) {
-                    let message = document.createElement('li');
-                    message.innerHTML = "You can't go off the board.";
-                    const commentList = document.getElementById('alerts').querySelector('ul');
-                    commentList.innerHTML = '';
-                    commentList.appendChild(message);
+                    this.displayMessageInvalidMove();
                     return false;
             };
             const wantedPosition = document.getElementById(wantedId);
-            if (currentPosition.innerHTML === wantedPosition.innerHTML) {
-                return false;
-            } else if (wantedPosition.innerHTML === '') {
+            if (wantedPosition.innerHTML === '') {
                 return true;
+            } else if (currentPosition.innerHTML.includes(wantedPosition.innerHTML) ||
+            wantedPosition.innerHTML.includes(currentPosition.innerHTML)) {
+                this.displayMessageInvalidMove();
+                return false
             } else {
                 const afterWantedId = `${Number(wantedId[0])-1}${Number(wantedId[1])+1}`;
                 if (wantedId[0] == "-" ||
@@ -279,6 +287,7 @@ class Checkers {
                     wantedId[1] == "-" ||
                     Number(wantedId[1]) > 7 ||
                     document.getElementById(afterWantedId).innerHTML !== '') {
+                    this.displayMessageInvalidMove();
                     return false;
                 } else {
                     return true;
@@ -291,18 +300,16 @@ class Checkers {
                 Number(wantedId[0]) > 7 ||
                 wantedId[1] == "-" ||
                 Number(wantedId[1]) > 7) {
-                    let message = document.createElement('li');
-                    message.innerHTML = "You can't go off the board.";
-                    const commentList = document.getElementById('alerts').querySelector('ul');
-                    commentList.innerHTML = '';
-                    commentList.appendChild(message);
+                    this.displayMessageInvalidMove();
                     return false;
             };
             const wantedPosition = document.getElementById(wantedId);
-            if (currentPosition.innerHTML === wantedPosition.innerHTML) {
-                return false;
-            } else if (wantedPosition.innerHTML === '') {
+            if (wantedPosition.innerHTML === '') {
                 return true;
+            } else if (currentPosition.innerHTML.includes(wantedPosition.innerHTML) ||
+            wantedPosition.innerHTML.includes(currentPosition.innerHTML)) {
+                this.displayMessageInvalidMove();
+                return false;
             } else {
                 const afterWantedId = `${Number(wantedId[0])+1}${Number(wantedId[1])-1}`;
                 if (wantedId[0] == "-" ||
@@ -310,6 +317,7 @@ class Checkers {
                     wantedId[1] == "-" ||
                     Number(wantedId[1]) > 7 ||
                     document.getElementById(afterWantedId).innerHTML !== '') {
+                    this.displayMessageInvalidMove();
                     return false;
                 } else {
                     return true;
@@ -322,18 +330,16 @@ class Checkers {
                 Number(wantedId[0]) > 7 ||
                 wantedId[1] == "-" ||
                 Number(wantedId[1]) > 7) {
-                    let message = document.createElement('li');
-                    message.innerHTML = "You can't go off the board.";
-                    const commentList = document.getElementById('alerts').querySelector('ul');
-                    commentList.innerHTML = '';
-                    commentList.appendChild(message);
+                    this.displayMessageInvalidMove();
                     return false;
             };
             const wantedPosition = document.getElementById(wantedId);
-            if (currentPosition.innerHTML === wantedPosition.innerHTML) {
-                return false;
-            } else if (wantedPosition.innerHTML === '') {
+            if (wantedPosition.innerHTML === '') {
                 return true;
+            } else if (currentPosition.innerHTML.includes(wantedPosition.innerHTML) ||
+            wantedPosition.innerHTML.includes(currentPosition.innerHTML)) {
+                this.displayMessageInvalidMove();
+                return false;
             } else {
                 const afterWantedId = `${Number(wantedId[0])+1}${Number(wantedId[1])+1}`;
                 if (wantedId[0] == "-" ||
@@ -341,6 +347,7 @@ class Checkers {
                     wantedId[1] == "-" ||
                     Number(wantedId[1]) > 7 ||
                     document.getElementById(afterWantedId).innerHTML !== '') {
+                    this.displayMessageInvalidMove();
                     return false;
                 } else {
                     return true;
@@ -389,12 +396,6 @@ class Checkers {
             const newId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
             const newPosition = document.getElementById(newId);
             newPosition.innerHTML = currentPosition.innerHTML;
-            console.log('currentPosition:');
-            console.log(selectedId);
-            console.log(currentPosition);
-            console.log('newPosition:');
-            console.log(newId);
-            console.log(newPosition);
             this.deletePiece(selectedId);
             return newId;
         } else if (direction === 'Up-Right') {
@@ -402,24 +403,12 @@ class Checkers {
             const newId = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
             const newPosition = document.getElementById(newId);
             newPosition.innerHTML = currentPosition.innerHTML;
-            console.log('currentPosition:');
-            console.log(selectedId);
-            console.log(currentPosition);
-            console.log('newPosition:');
-            console.log(newId);
-            console.log(newPosition);
             this.deletePiece(selectedId);
             return newId;
         } else if (direction === 'Down-Left') {
             const currentPosition = document.getElementById(selectedId);
             const newId = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
             const newPosition = document.getElementById(newId);
-            console.log('currentPosition:');
-            console.log(selectedId);
-            console.log(currentPosition);
-            console.log('newPosition:');
-            console.log(newId);
-            console.log(newPosition);
             newPosition.innerHTML = currentPosition.innerHTML;
             this.deletePiece(selectedId);
             return newId;
@@ -427,12 +416,6 @@ class Checkers {
             const currentPosition = document.getElementById(selectedId);
             const newId = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
             const newPosition = document.getElementById(newId);
-            console.log('currentPosition:');
-            console.log(selectedId);
-            console.log(currentPosition);
-            console.log('newPosition:');
-            console.log(newId);
-            console.log(newPosition);
             newPosition.innerHTML = currentPosition.innerHTML;
             this.deletePiece(selectedId);
             return newId;
