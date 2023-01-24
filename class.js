@@ -82,8 +82,7 @@ class Checkers {
     };
 
     displayCorrectBtns(selectedPiece, turn) {
-        const moveBtns = document.querySelectorAll('#commands button');
-        moveBtns.forEach(cE => cE.classList.add('hidden'));
+        this.hideMoveBtns();
         document.getElementById('back-to-menu-btn').classList.remove('hidden');
         if (selectedPiece.innerHTML.includes(`b`) && turn === 1) {
             if(this.isKing(selectedPiece)) {
@@ -100,6 +99,11 @@ class Checkers {
             };
         };
     };
+
+    hideMoveBtns() {
+        const moveBtns = document.querySelectorAll('#commands button');
+        moveBtns.forEach(cE => cE.classList.add('hidden'));
+    }
 
     showWhiteBtns() {
         const whiteBtns = document.querySelectorAll('#white-commands button');
@@ -195,15 +199,18 @@ class Checkers {
                                    // eventListener nesses botões para que, ao serem clicados, reabilitem as seleções de outras peças
                                    // e desabilitem esses novos eventListeners do combo (além de esconder/mostrar os botões adequados).
                     } else {
-                    this.switchTurns();
+                        this.hideMoveBtns();
+                        this.switchTurns();
                     };
                 } else if (this.checkForMiss(selectedId)) {
                     this.deletePiece();
                     this.clearSelected(this.selectedPiece);
+                    this.hideMoveBtns();
                     this.switchTurns();
                 }else{
                     this.simpleMove(this.selectedPiece.id, direction);
                     this.clearSelected(this.selectedPiece);
+                    this.hideMoveBtns();
                     this.switchTurns();
                 };
             };
@@ -229,7 +236,6 @@ class Checkers {
                     commentList.appendChild(message);
                     return false;
             };
-            console.log(wantedId[1]);
             const wantedPosition = document.getElementById(wantedId);
             if (currentPosition.innerHTML === wantedPosition.innerHTML) {
                 return false;
