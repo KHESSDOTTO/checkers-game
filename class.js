@@ -47,20 +47,6 @@ class Checkers {
         gameSection.style.display = "flex";
     };
 
-    hideGameSection() {
-        const preGameSection = document.getElementById('pre-game-section');
-        const gameSection = document.getElementById('game-section');
-        gameSection.style.display = "none";
-        preGameSection.style.display = "block";
-
-        const boardHTML = document.getElementById('board').querySelector('table');
-        const commentList = document.getElementById('alerts').querySelector('ul');
-        commentList.innerHTML = '';
-        boardHTML.innerHTML = '';
-        this.selectedPiece = undefined;
-        this.turn = 0;
-    };
-
     selectPiece(clickedSquare) {
         // altera o valor da "this.selectedPiece" para a peça selecionada.
         console.log(this.turn);
@@ -141,21 +127,15 @@ class Checkers {
 
     whiteTurn() {
         this.turn = 0;
-        let message = document.createElement('li');
-        message.innerHTML = "White's turn";
-        const commentList = document.getElementById('alerts').querySelector('ul');
-        commentList.innerHTML = '';
-        commentList.appendChild(message);
+        document.getElementById('turn').innerHTML = "White's turn";
+        document.getElementById('message').innerHTML = "";
         this.winVerify();
     };
 
     brownTurn() {
         this.turn = 1;
-        let message = document.createElement('li');
-        message.innerHTML = "Brown's turn";
-        const commentList = document.getElementById('alerts').querySelector('ul');
-        commentList.innerHTML = '';
-        commentList.appendChild(message);
+        document.getElementById('turn').innerHTML = "Brown's turn";
+        document.getElementById('message').innerHTML = "";
         this.winVerify();
     };
 
@@ -190,18 +170,10 @@ class Checkers {
             const selectedId = this.selectedPiece.id;
             if (this.checkForMove(selectedId, direction)) {
                 if (this.checkForCapture(selectedId, direction)) {
-                    if (this.checkForCombo(this.capture(selectedId, direction))) {
-                        this.chooseCombo(this.checkForCombo(this.capture(selectedId, direction)));
-                        this.clearSelected(this.selectedPiece);
-                        return;    // chooseCombo precisa desabilitar os event listeners do tabuleiro para manter selecionada a peça
-                                   // atualmente selecionada, habilitar visão somente dos botões referentes ao combo e habilitar
-                                   // eventListener nesses botões para que, ao serem clicados, reabilitem as seleções de outras peças
-                                   // e desabilitem esses novos eventListeners do combo (além de esconder/mostrar os botões adequados).
-                    } else {
-                        this.clearSelected(this.selectedPiece);
-                        this.hideMoveBtns();
-                        this.switchTurns();
-                    };
+                    this.checkForCombo(this.capture(selectedId, direction));
+                    this.clearSelected(this.selectedPiece);
+                    this.hideMoveBtns();
+                    this.switchTurns();
                 } else {
                     this.checkForMiss();
                     this.simpleMove(this.selectedPiece.id, direction);
@@ -209,16 +181,14 @@ class Checkers {
                     this.hideMoveBtns();
                     this.switchTurns();
                 };
+            } else {
+                this.displayMessageInvalidMove();
             };
         };
     };
 
     displayMessageInvalidMove() {
-        let message = document.createElement('li');
-        message.innerHTML = "Invalid move.";
-        const commentList = document.getElementById('alerts').querySelector('ul');
-        commentList.innerHTML = '';
-        commentList.appendChild(message);
+        document.getElementById('message').innerHTML = 'Invalid move.'
     };
 
     checkForMove(selectedId, direction) {
@@ -251,7 +221,6 @@ class Checkers {
             Number(wantedId[0]) > 7 ||
             wantedId[1] == "-" ||
             Number(wantedId[1]) > 7) {
-                this.displayMessageInvalidMove(); // off the board
                 return false;
         };
         const wantedPosition = document.getElementById(wantedId);
@@ -259,17 +228,14 @@ class Checkers {
             return true;
         } else if (currentPosition.innerHTML.includes(wantedPosition.innerHTML) ||
             wantedPosition.innerHTML.includes(currentPosition.innerHTML)) {
-            this.displayMessageInvalidMove(); // same player's piece
             return false; 
         } else {
             if (afterWantedId[0] == "-" ||
                 Number(afterWantedId[0]) > 7 ||
                 afterWantedId[1] == "-" ||
                 Number(afterWantedId[1]) > 7) {
-                this.displayMessageInvalidMove(); // square after capture off the board
                 return false;
             } else if (document.getElementById(afterWantedId).innerHTML !== '') {
-                this.displayMessageInvalidMove(); // square after capture isn't empty
                 return false;
             } else {
                 return true;
@@ -359,7 +325,7 @@ class Checkers {
         return newId;
     };
 
-    checkForCombo(afterCapture) {
+    checkForCombo(afterCapture, direction) {
         // avalia se após uma captura, existem oportunidades de combo. Caso haja uma, realiza a captura, caso haja mais de uma
         // possibilidade, chama a função chooseCombo.
         let arrCombo = [];
@@ -442,7 +408,6 @@ class Checkers {
         };
         if (miss) {
             this.deletePiece(idPieceToVerify);
-            console.log(`deleted piece id: ${idPieceToVerify}.`)
         };
     };
 

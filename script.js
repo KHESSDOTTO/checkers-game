@@ -14,9 +14,6 @@ window.addEventListener('load', () => {
 
         game.showGameSection();
 
-        const backToMenuBtn = document.getElementById('back-to-menu-btn');
-        backToMenuBtn.addEventListener('click', game.hideGameSection);
-
         console.log(game.turn);
         console.log(game.selectedPiece);
 

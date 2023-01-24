@@ -68,6 +68,11 @@ body * {
 
 #alerts h2 {
     text-align: center;
+    margin-bottom: 2em;
+}
+
+#alerts ul li {
+    margin-top: 1em;
 }
 
 #board {
