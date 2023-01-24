@@ -203,7 +203,7 @@ class Checkers {
                         this.switchTurns();
                     };
                 } else if (this.checkForMiss(selectedId)) {
-                    this.deletePiece();
+                    this.deletePiece(selectedId);
                     this.clearSelected(this.selectedPiece);
                     this.hideMoveBtns();
                     this.switchTurns();
@@ -333,7 +333,6 @@ class Checkers {
     capture(selectedId, direction) {
         // "pula" um campo para capturar a peça adversária. Apaga o innerHTML do quadrado "pulado". Retorna o novo id para ser
         // referência para o checkForCombo.
-        console.log('Running once');
         let capturedId;
         let newId;
         switch (direction) {
@@ -358,9 +357,6 @@ class Checkers {
         const currentPosition = document.getElementById(selectedId);
         newPosition.classList.add('selected');
         newPosition.innerHTML = currentPosition.innerHTML;
-        console.log('selectedId');
-        console.log(selectedId);
-
         this.selectedPiece = newPosition;
         this.clearSelected(currentPosition);
         this.deletePiece(capturedId);
@@ -383,7 +379,81 @@ class Checkers {
     checkForMiss(selectedId) {
         // checa se houve oportunidade de comer alguma peça adversária não realizada para eliminar a peça que cometeu a falta.
         // avisa nas observações quando uma peça é "assoprada".
-    }
+        // const turn = this.turn;
+        // const listOfSquares = document.querySelectorAll('.square');
+        // const piecesIdArr = [];
+
+        // if (turn === 0) {
+        //     selector = 'w';
+        // } else if (turn === 1) {
+        //     selector = 'b';
+        // };
+        // console.log('selector');
+        // console.log(selector);
+
+        // for (let i = 0; i < listOfSquares.length; i++) {
+        //     if (listOfSquares[i].innerHTML.includes(selector)) {
+        //         piecesIdArr.push(listOfSquares[i].id)
+        //     };
+        // };
+        // console.log('piecesIdArr');
+        // console.log(piecesIdArr);
+
+        // let miss = 0;
+        // piecesIdArr.forEach(cE => this.verifyEachMiss(miss));
+
+        let selectedPiece = document.getElementById(selectedId);
+        let upLeftId1 = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
+        let upRightId1 = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
+        let downLeftId1 = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
+        let downRightId1 = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
+        let upLeftId2 = `${Number(selectedId[0])-2}${Number(selectedId[1])-2}`;
+        let upRightId2 = `${Number(selectedId[0])-2}${Number(selectedId[1])+2}`;
+        let downLeftId2 = `${Number(selectedId[0])+2}${Number(selectedId[1])-2}`;
+        let downRightId2 = `${Number(selectedId[0])+2}${Number(selectedId[1])+2}`;
+        let idArrW = [[upLeftId1, upLeftId2], [upRightId1, upRightId2]];
+        let idArrB = [[downLeftId1, downLeftId2], [downRightId1, downRightId2]];
+        let miss = 0;
+        if(selectedPiece.innerHTML.includes('w')) {
+            idArrW.forEach(cE => {
+                if (Number(cE[0][0]) <= 7 &&
+                    cE[0][0] !== '-' &&
+                    Number(cE[0][1]) <= 7 &&
+                    cE[0][1] !== '-' &&
+                    Number(cE[1][0]) <= 7 &&
+                    cE[1][0] !== '-' &&
+                    Number(cE[1][1]) <= 7 &&
+                    cE[1][1] !== '-') {
+                        if (document.getElementById(cE[0]).innerHTML.includes('b') &&
+                            document.getElementById(cE[1]).innerHTML === '') {
+                                console.log('there is a miss!');
+                                miss = 1;
+                        };
+                    };
+            });
+        } else if (selectedPiece.innerHTML.includes('b')) {
+            idArrB.forEach(cE => {
+                if (Number(cE[0][0]) <= 7 &&
+                    cE[0][0] !== '-' &&
+                    Number(cE[0][1]) <= 7 &&
+                    cE[0][1] !== '-' &&
+                    Number(cE[1][0]) <= 7 &&
+                    cE[1][0] !== '-' &&
+                    Number(cE[1][1]) <= 7 &&
+                    cE[1][1] !== '-') {
+                        if (document.getElementById(cE[0]).innerHTML.includes('w') &&
+                            document.getElementById(cE[1]).innerHTML === '') {
+                                console.log('there is a miss!');
+                                miss = 1;
+                        };
+                    };
+            });
+        };
+        if (miss) {
+            return true;
+        }
+        return false;
+    };
 
     deletePiece(selectedId) {
         // "assopra" a peça (quando ela não captura uma adversária -> deve ser chamada caso checkForMiss seja 'true').
