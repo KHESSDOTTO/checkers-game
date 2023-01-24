@@ -233,133 +233,53 @@ class Checkers {
         // quando não há duas peças adversárias diretamente na direção, ou apenas uma sendo que o próximo campo está fora do
         // tabuleiro. Registra nos comentários se não foi possível realizar o movimento e o motivo. Retorna true se for possível
         // movimentar a peça, ou false se não for.
-        if (direction === 'Up-Left') {
-            const wantedId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
-            const currentPosition = document.getElementById(selectedId);
-            if (wantedId[0] == "-" ||
-                Number(wantedId[0]) > 7 ||
-                wantedId[1] == "-" ||
-                Number(wantedId[1]) > 7) {
-                    this.displayMessageInvalidMove(); // off the board
-                    return false;
-            };
-            const wantedPosition = document.getElementById(wantedId);
-            if (wantedPosition.innerHTML === '') {
-                return true;
-            } else if (currentPosition.innerHTML.includes(wantedPosition.innerHTML) ||
-                wantedPosition.innerHTML.includes(currentPosition.innerHTML)) {
-                this.displayMessageInvalidMove(); // same player's piece
-                return false; 
-            } else {
-                const afterWantedId = `${Number(wantedId[0])-1}${Number(wantedId[1])-1}`;
-                if (afterWantedId[0] == "-" ||
-                    Number(afterWantedId[0]) > 7 ||
-                    afterWantedId[1] == "-" ||
-                    Number(afterWantedId[1]) > 7) {
-                    this.displayMessageInvalidMove();
-                    return false;
-                } else if (document.getElementById(afterWantedId).innerHTML !== '') {
-                    this.displayMessageInvalidMove();
-                    return false;
-                } else {
-                    return true;
-                };
-            };
-        }else if (direction === 'Up-Right') {
-            const wantedId = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
-            const currentPosition = document.getElementById(selectedId);
-            if (wantedId[0] == "-" ||
-                Number(wantedId[0]) > 7 ||
-                wantedId[1] == "-" ||
-                Number(wantedId[1]) > 7) {
-                    this.displayMessageInvalidMove();
-                    return false;
-            };
-            const wantedPosition = document.getElementById(wantedId);
-            if (wantedPosition.innerHTML === '') {
-                return true;
-            } else if (currentPosition.innerHTML.includes(wantedPosition.innerHTML) ||
+        let wantedId;
+        let afterWantedId;
+        switch (direction) {
+            case 'Up-Left':
+                wantedId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
+                afterWantedId = `${Number(wantedId[0])-1}${Number(wantedId[1])-1}`;
+                break;
+            case 'Up-Right':
+                wantedId = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
+                afterWantedId = `${Number(wantedId[0])-1}${Number(wantedId[1])+1}`;
+                break;
+            case 'Down-Left':
+                wantedId = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
+                afterWantedId = `${Number(wantedId[0])+1}${Number(wantedId[1])-1}`;
+                break;
+            case 'Down-Right':
+                wantedId = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
+                afterWantedId = `${Number(wantedId[0])+1}${Number(wantedId[1])+1}`;
+                break;
+        };
+        const currentPosition = document.getElementById(selectedId);
+        if (wantedId[0] == "-" ||
+            Number(wantedId[0]) > 7 ||
+            wantedId[1] == "-" ||
+            Number(wantedId[1]) > 7) {
+                this.displayMessageInvalidMove(); // off the board
+                return false;
+        };
+        const wantedPosition = document.getElementById(wantedId);
+        if (wantedPosition.innerHTML === '') {
+            return true;
+        } else if (currentPosition.innerHTML.includes(wantedPosition.innerHTML) ||
             wantedPosition.innerHTML.includes(currentPosition.innerHTML)) {
-                this.displayMessageInvalidMove();
-                return false
-            } else {
-                const afterWantedId = `${Number(wantedId[0])-1}${Number(wantedId[1])+1}`;
-                if (afterWantedId[0] == "-" ||
-                    Number(afterWantedId[0]) > 7 ||
-                    afterWantedId[1] == "-" ||
-                    Number(afterWantedId[1]) > 7) {
-                    this.displayMessageInvalidMove();
-                    return false;
-                } else if (document.getElementById(afterWantedId).innerHTML !== '') {
-                    this.displayMessageInvalidMove();
-                    return false;
-                } else {
-                    return true;
-                };
-            };
-        }else if (direction === 'Down-Left') {
-            const wantedId = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
-            const currentPosition = document.getElementById(selectedId);
-            if (wantedId[0] == "-" ||
-                Number(wantedId[0]) > 7 ||
-                wantedId[1] == "-" ||
-                Number(wantedId[1]) > 7) {
-                    this.displayMessageInvalidMove();
-                    return false;
-            };
-            const wantedPosition = document.getElementById(wantedId);
-            if (wantedPosition.innerHTML === '') {
-                return true;
-            } else if (currentPosition.innerHTML.includes(wantedPosition.innerHTML) ||
-            wantedPosition.innerHTML.includes(currentPosition.innerHTML)) {
-                this.displayMessageInvalidMove();
+            this.displayMessageInvalidMove(); // same player's piece
+            return false; 
+        } else {
+            if (afterWantedId[0] == "-" ||
+                Number(afterWantedId[0]) > 7 ||
+                afterWantedId[1] == "-" ||
+                Number(afterWantedId[1]) > 7) {
+                this.displayMessageInvalidMove(); // square after capture off the board
+                return false;
+            } else if (document.getElementById(afterWantedId).innerHTML !== '') {
+                this.displayMessageInvalidMove(); // square after capture isn't empty
                 return false;
             } else {
-                const afterWantedId = `${Number(wantedId[0])+1}${Number(wantedId[1])-1}`;
-                if (afterWantedId[0] == "-" ||
-                    Number(afterWantedId[0]) > 7 ||
-                    afterWantedId[1] == "-" ||
-                    Number(afterWantedId[1]) > 7) {
-                    this.displayMessageInvalidMove();
-                    return false;
-                } else if (document.getElementById(afterWantedId).innerHTML !== '') {
-                    this.displayMessageInvalidMove();
-                    return false;
-                } else {
-                    return true;
-                };
-            };
-        }else if (direction === 'Down-Right') {
-            const wantedId = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
-            const currentPosition = document.getElementById(selectedId);
-            if (wantedId[0] == "-" ||
-                Number(wantedId[0]) > 7 ||
-                wantedId[1] == "-" ||
-                Number(wantedId[1]) > 7) {
-                    this.displayMessageInvalidMove();
-                    return false;
-            };
-            const wantedPosition = document.getElementById(wantedId);
-            if (wantedPosition.innerHTML === '') {
                 return true;
-            } else if (currentPosition.innerHTML.includes(wantedPosition.innerHTML) ||
-            wantedPosition.innerHTML.includes(currentPosition.innerHTML)) {
-                this.displayMessageInvalidMove();
-                return false;
-            } else {
-                const afterWantedId = `${Number(wantedId[0])+1}${Number(wantedId[1])+1}`;
-                if (afterWantedId[0] == "-" ||
-                    Number(afterWantedId[0]) > 7 ||
-                    afterWantedId[1] == "-" ||
-                    Number(afterWantedId[1]) > 7) {
-                    this.displayMessageInvalidMove();
-                    return false;
-                } else if (document.getElementById(afterWantedId).innerHTML !== '') {
-                    this.displayMessageInvalidMove();
-                    return false;
-                } else {
-                    return true;
-                };
             };
         };
     };
