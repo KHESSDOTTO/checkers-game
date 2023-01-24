@@ -202,12 +202,8 @@ class Checkers {
                         this.hideMoveBtns();
                         this.switchTurns();
                     };
-                } else if (this.checkForMiss(selectedId)) {
-                    this.deletePiece(selectedId);
-                    this.clearSelected(this.selectedPiece);
-                    this.hideMoveBtns();
-                    this.switchTurns();
-                }else{
+                } else {
+                    this.checkForMiss();
                     this.simpleMove(this.selectedPiece.id, direction);
                     this.clearSelected(this.selectedPiece);
                     this.hideMoveBtns();
@@ -325,7 +321,6 @@ class Checkers {
         const newPosition = document.getElementById(newId);
         const currentPosition = document.getElementById(selectedId);
         newPosition.innerHTML = currentPosition.innerHTML;
-        // currentPosition.innerHTML = 'k'
         this.deletePiece(selectedId);
         return newId;
     };
@@ -369,52 +364,49 @@ class Checkers {
         // possibilidade, chama a função chooseCombo.
         let arrCombo = [];
         return false;
-    }
+    };
 
     chooseCombo() {
         // muda cores para sinalizar evento diferente, registra nas observações que há mais de um combo possível, e pede para o
         // jogador escolher o combo que prefere fazer.
-    }
+    };
 
-    checkForMiss(selectedId) {
+    checkForMiss() {
         // checa se houve oportunidade de comer alguma peça adversária não realizada para eliminar a peça que cometeu a falta.
         // avisa nas observações quando uma peça é "assoprada".
-        // const turn = this.turn;
-        // const listOfSquares = document.querySelectorAll('.square');
-        // const piecesIdArr = [];
+        const turn = this.turn;
+        const listOfSquares = document.querySelectorAll('.square');
+        const piecesIdArr = [];
+        let selector;
+        if (turn === 0) {
+            selector = 'w';
+        } else if (turn === 1) {
+            selector = 'b';
+        };
+        for (let i = 0; i < listOfSquares.length; i++) {
+            if (listOfSquares[i].innerHTML.includes(selector)) {
+                piecesIdArr.push(listOfSquares[i].id)
+            };
+        };
+        for (let i = 0; i < piecesIdArr.length; i++) {
+            this.verifyEachMiss(piecesIdArr[i]);
+        };
+    };
 
-        // if (turn === 0) {
-        //     selector = 'w';
-        // } else if (turn === 1) {
-        //     selector = 'b';
-        // };
-        // console.log('selector');
-        // console.log(selector);
-
-        // for (let i = 0; i < listOfSquares.length; i++) {
-        //     if (listOfSquares[i].innerHTML.includes(selector)) {
-        //         piecesIdArr.push(listOfSquares[i].id)
-        //     };
-        // };
-        // console.log('piecesIdArr');
-        // console.log(piecesIdArr);
-
-        // let miss = 0;
-        // piecesIdArr.forEach(cE => this.verifyEachMiss(miss));
-
-        let selectedPiece = document.getElementById(selectedId);
-        let upLeftId1 = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
-        let upRightId1 = `${Number(selectedId[0])-1}${Number(selectedId[1])+1}`;
-        let downLeftId1 = `${Number(selectedId[0])+1}${Number(selectedId[1])-1}`;
-        let downRightId1 = `${Number(selectedId[0])+1}${Number(selectedId[1])+1}`;
-        let upLeftId2 = `${Number(selectedId[0])-2}${Number(selectedId[1])-2}`;
-        let upRightId2 = `${Number(selectedId[0])-2}${Number(selectedId[1])+2}`;
-        let downLeftId2 = `${Number(selectedId[0])+2}${Number(selectedId[1])-2}`;
-        let downRightId2 = `${Number(selectedId[0])+2}${Number(selectedId[1])+2}`;
+    verifyEachMiss(idPieceToVerify) {
+        let pieceToVerify = document.getElementById(idPieceToVerify);
+        let upLeftId1 = `${Number(idPieceToVerify[0])-1}${Number(idPieceToVerify[1])-1}`;
+        let upRightId1 = `${Number(idPieceToVerify[0])-1}${Number(idPieceToVerify[1])+1}`;
+        let downLeftId1 = `${Number(idPieceToVerify[0])+1}${Number(idPieceToVerify[1])-1}`;
+        let downRightId1 = `${Number(idPieceToVerify[0])+1}${Number(idPieceToVerify[1])+1}`;
+        let upLeftId2 = `${Number(idPieceToVerify[0])-2}${Number(idPieceToVerify[1])-2}`;
+        let upRightId2 = `${Number(idPieceToVerify[0])-2}${Number(idPieceToVerify[1])+2}`;
+        let downLeftId2 = `${Number(idPieceToVerify[0])+2}${Number(idPieceToVerify[1])-2}`;
+        let downRightId2 = `${Number(idPieceToVerify[0])+2}${Number(idPieceToVerify[1])+2}`;
         let idArrW = [[upLeftId1, upLeftId2], [upRightId1, upRightId2]];
         let idArrB = [[downLeftId1, downLeftId2], [downRightId1, downRightId2]];
         let miss = 0;
-        if(selectedPiece.innerHTML.includes('w')) {
+        if(pieceToVerify.innerHTML.includes('w')) {
             idArrW.forEach(cE => {
                 if (Number(cE[0][0]) <= 7 &&
                     cE[0][0] !== '-' &&
@@ -431,7 +423,7 @@ class Checkers {
                         };
                     };
             });
-        } else if (selectedPiece.innerHTML.includes('b')) {
+        } else if (pieceToVerify.innerHTML.includes('b')) {
             idArrB.forEach(cE => {
                 if (Number(cE[0][0]) <= 7 &&
                     cE[0][0] !== '-' &&
@@ -443,16 +435,15 @@ class Checkers {
                     cE[1][1] !== '-') {
                         if (document.getElementById(cE[0]).innerHTML.includes('w') &&
                             document.getElementById(cE[1]).innerHTML === '') {
-                                console.log('there is a miss!');
                                 miss = 1;
                         };
                     };
             });
         };
         if (miss) {
-            return true;
-        }
-        return false;
+            this.deletePiece(idPieceToVerify);
+            console.log(`deleted piece id: ${idPieceToVerify}.`)
+        };
     };
 
     deletePiece(selectedId) {
@@ -461,7 +452,8 @@ class Checkers {
     };
 
     winVerify() {
-        // verifica o término do jogo após as jogadas whiteTurn e brownTurn. Caso tenha encerrado o jogo. Anuncia na tela
+        // verifica o término do jogo após as jogadas whiteTurn e brownTurn. Caso tenha encerrado o jogo. Anuncia na tela.
+        // console.log('running winVerify');
         // let browns = 0;
         // let whites = 0;
         // const squares = document.getElementById('game-section').querySelector('table').children;
@@ -469,10 +461,19 @@ class Checkers {
         // for (let i = 0; i < squares.length; i++) {
         //     if (squares[i].innerHTML === 'b') {
         //         browns = 1;
+                // console.log('insideBrowns');
+                // console.log(browns);
         //     } else if (squares[i].innerHTML === 'w') {
         //         whites = 1;
+                // console.log('insideWhites');
+                // console.log(whites);
         //     };
         // };
+
+        // console.log('outsideBrowns');
+        // console.log(browns);
+        // console.log('outsideWhites');
+        // console.log(whites);
         // if (browns === 0) {
         //     alert(`White player wins!`);
         //     const preGameSection = document.getElementById('pre-game-section');
