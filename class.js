@@ -252,12 +252,14 @@ class Checkers {
                 return false; 
             } else {
                 const afterWantedId = `${Number(wantedId[0])-1}${Number(wantedId[1])-1}`;
-                if (wantedId[0] == "-" ||
-                    Number(wantedId[0]) > 7 ||
-                    wantedId[1] == "-" ||
-                    Number(wantedId[1]) > 7 ||
-                    document.getElementById(afterWantedId).innerHTML !== '') {
-                    this.displayMessageInvalidMove(); // off the board after capture
+                if (afterWantedId[0] == "-" ||
+                    Number(afterWantedId[0]) > 7 ||
+                    afterWantedId[1] == "-" ||
+                    Number(afterWantedId[1]) > 7) {
+                    this.displayMessageInvalidMove();
+                    return false;
+                } else if (document.getElementById(afterWantedId).innerHTML !== '') {
+                    this.displayMessageInvalidMove();
                     return false;
                 } else {
                     return true;
@@ -282,11 +284,13 @@ class Checkers {
                 return false
             } else {
                 const afterWantedId = `${Number(wantedId[0])-1}${Number(wantedId[1])+1}`;
-                if (wantedId[0] == "-" ||
-                    Number(wantedId[0]) > 7 ||
-                    wantedId[1] == "-" ||
-                    Number(wantedId[1]) > 7 ||
-                    document.getElementById(afterWantedId).innerHTML !== '') {
+                if (afterWantedId[0] == "-" ||
+                    Number(afterWantedId[0]) > 7 ||
+                    afterWantedId[1] == "-" ||
+                    Number(afterWantedId[1]) > 7) {
+                    this.displayMessageInvalidMove();
+                    return false;
+                } else if (document.getElementById(afterWantedId).innerHTML !== '') {
                     this.displayMessageInvalidMove();
                     return false;
                 } else {
@@ -312,11 +316,13 @@ class Checkers {
                 return false;
             } else {
                 const afterWantedId = `${Number(wantedId[0])+1}${Number(wantedId[1])-1}`;
-                if (wantedId[0] == "-" ||
-                    Number(wantedId[0]) > 7 ||
-                    wantedId[1] == "-" ||
-                    Number(wantedId[1]) > 7 ||
-                    document.getElementById(afterWantedId).innerHTML !== '') {
+                if (afterWantedId[0] == "-" ||
+                    Number(afterWantedId[0]) > 7 ||
+                    afterWantedId[1] == "-" ||
+                    Number(afterWantedId[1]) > 7) {
+                    this.displayMessageInvalidMove();
+                    return false;
+                } else if (document.getElementById(afterWantedId).innerHTML !== '') {
                     this.displayMessageInvalidMove();
                     return false;
                 } else {
@@ -342,11 +348,13 @@ class Checkers {
                 return false;
             } else {
                 const afterWantedId = `${Number(wantedId[0])+1}${Number(wantedId[1])+1}`;
-                if (wantedId[0] == "-" ||
-                    Number(wantedId[0]) > 7 ||
-                    wantedId[1] == "-" ||
-                    Number(wantedId[1]) > 7 ||
-                    document.getElementById(afterWantedId).innerHTML !== '') {
+                if (afterWantedId[0] == "-" ||
+                    Number(afterWantedId[0]) > 7 ||
+                    afterWantedId[1] == "-" ||
+                    Number(afterWantedId[1]) > 7) {
+                    this.displayMessageInvalidMove();
+                    return false;
+                } else if (document.getElementById(afterWantedId).innerHTML !== '') {
                     this.displayMessageInvalidMove();
                     return false;
                 } else {
