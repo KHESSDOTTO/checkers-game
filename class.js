@@ -165,13 +165,13 @@ class Checkers {
             if (this.checkForMove(selectedId, direction)) {
                 if (this.checkForCapture(selectedId, direction)) {
                     this.checkForCombo(this.capture(selectedId, direction), direction);
-                    this.clearSelected(this.selectedPiece);
+                    this.checkCreateKing(this.selectedPiece);
                     this.hideMoveBtns();
                     this.switchTurns();
                 } else {
                     this.checkForMiss();
                     this.simpleMove(this.selectedPiece.id, direction);
-                    this.clearSelected(this.selectedPiece);
+                    this.checkCreateKing(this.selectedPiece);
                     this.hideMoveBtns();
                     this.switchTurns();
                 };
@@ -282,6 +282,8 @@ class Checkers {
         const currentPosition = document.getElementById(selectedId);
         newPosition.innerHTML = currentPosition.innerHTML;
         this.deletePiece(selectedId);
+        this.clearSelected(currentPosition);
+        this.selectedPiece = newPosition;
         return newId;
     };
 
@@ -318,7 +320,6 @@ class Checkers {
         const currentPosition = document.getElementById(selectedId);
         console.log('newPosition:');
         console.log(newPosition);
-        newPosition.classList.add('selected');
         newPosition.innerHTML = currentPosition.innerHTML;
         this.selectedPiece = newPosition;
         this.clearSelected(currentPosition);
@@ -533,14 +534,19 @@ class Checkers {
         // };
     };
 
-    checkFormKing() {
+    checkCreateKing(selectedPiece) {
         // checa se uma dama deve ser formada.
+        if ((selectedPiece.innerHTML === 'w' && selectedPiece.id[0] === '0') ||
+            (selectedPiece.innerHTML === 'b' && selectedPiece.id[0] === '7')) {
+            this.createKing(selectedPiece);
+        };
     };
 
-    formKing(piece) {
+    createKing(piece) {
         // forma uma dama quando uma peça chega ao extremo vertical oposto do tabuleiro.
-        piece.innerHTML = `k${piece.innerHTML}`
-    }
+        piece.innerHTML = `k${piece.innerHTML}`;
+        piece.classList.add('king');
+    };
 
     isKing(selectedPiece) {
         // verifica se a peça selecionada é uma dama. Se for, habilita botões de movimento da dama (incluindo botão extra:
