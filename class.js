@@ -157,20 +157,15 @@ class Checkers {
         // função moveKing. passa a vez do jogador após a movimentação ser concluída.
         const direction = btn.innerHTML;
         console.log(direction);
-
         if (this.selectedPiece === undefined) {
-            let message = document.createElement('li');
-            message.innerHTML = 'You must select a piece to move.';
-            const commentList = document.getElementById('alerts').querySelector('ul');
-            commentList.innerHTML = '';
-            commentList.appendChild(message);
+            document.getElementById('message').innerHTML = 'You must select a piece to move.';
         } else if (this.isKing(this.selectedPiece)) {
             this.moveKing(btn);
         } else {
             const selectedId = this.selectedPiece.id;
             if (this.checkForMove(selectedId, direction)) {
                 if (this.checkForCapture(selectedId, direction)) {
-                    this.checkForCombo(this.capture(selectedId, direction));
+                    this.checkForCombo(this.capture(selectedId, direction), direction);
                     this.clearSelected(this.selectedPiece);
                     this.hideMoveBtns();
                     this.switchTurns();
@@ -296,6 +291,10 @@ class Checkers {
         // referência para o checkForCombo.
         let capturedId;
         let newId;
+        console.log('received this selectedId');
+        console.log(selectedId);
+        console.log('received this direction');
+        console.log(direction);
         switch (direction) {
             case 'Up-Left':
                 capturedId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
@@ -314,8 +313,12 @@ class Checkers {
                 newId = `${Number(selectedId[0])+2}${Number(selectedId[1])+2}`;
                 break;
         };
+        console.log(`newId`);
+        console.log(newId);
         const newPosition = document.getElementById(newId);
         const currentPosition = document.getElementById(selectedId);
+        console.log('newPosition:');
+        console.log(newPosition);
         newPosition.classList.add('selected');
         newPosition.innerHTML = currentPosition.innerHTML;
         this.selectedPiece = newPosition;
@@ -328,13 +331,86 @@ class Checkers {
     checkForCombo(afterCapture, direction) {
         // avalia se após uma captura, existem oportunidades de combo. Caso haja uma, realiza a captura, caso haja mais de uma
         // possibilidade, chama a função chooseCombo.
+        console.log('running checkForCombo');
+        console.log('after capture is:');
+        console.log(afterCapture);
         let arrCombo = [];
-        return false;
+        let upLeftId1 = `${Number(afterCapture[0])-1}${Number(afterCapture[1])-1}`;
+        let upRightId1 = `${Number(afterCapture[0])-1}${Number(afterCapture[1])+1}`;
+        let downLeftId1 = `${Number(afterCapture[0])+1}${Number(afterCapture[1])-1}`;
+        let downRightId1 = `${Number(afterCapture[0])+1}${Number(afterCapture[1])+1}`;
+        let upLeftId2 = `${Number(afterCapture[0])-2}${Number(afterCapture[1])-2}`;
+        let upRightId2 = `${Number(afterCapture[0])-2}${Number(afterCapture[1])+2}`;
+        let downLeftId2 = `${Number(afterCapture[0])+2}${Number(afterCapture[1])-2}`;
+        let downRightId2 = `${Number(afterCapture[0])+2}${Number(afterCapture[1])+2}`;
+        const directionsId = [[upLeftId1, upLeftId2, 'Up-Left'],
+                              [upRightId1, upRightId2, 'Up-Right'],
+                              [downLeftId1, downLeftId2, 'Down-Left'],
+                              [downRightId1, downRightId2, 'Down-Right']];
+        directionsId.forEach(cE => {
+            if(this.selectedPiece.innerHTML.includes('w')) {
+                if (Number(cE[0][0]) <= 7 &&
+                    cE[0][0] !== '-' &&
+                    Number(cE[0][1]) <= 7 &&
+                    cE[0][1] !== '-' &&
+                    Number(cE[1][0]) <= 7 &&
+                    cE[1][0] !== '-' &&
+                    Number(cE[1][1]) <= 7 &&
+                    cE[1][1] !== '-') {
+                        if (document.getElementById(cE[0]).innerHTML.includes('b') &&
+                            document.getElementById(cE[1]).innerHTML === '') {
+                                console.log('pushed element to the comboArray');
+                                console.log(cE);
+                                arrCombo.push(cE);
+                        };
+                    };
+            } else if (this.selectedPiece.innerHTML.includes('b')) {
+                if (Number(cE[0][0]) <= 7 &&
+                    cE[0][0] !== '-' &&
+                    Number(cE[0][1]) <= 7 &&
+                    cE[0][1] !== '-' &&
+                    Number(cE[1][0]) <= 7 &&
+                    cE[1][0] !== '-' &&
+                    Number(cE[1][1]) <= 7 &&
+                    cE[1][1] !== '-') {
+                        if (document.getElementById(cE[0]).innerHTML.includes('w') &&
+                            document.getElementById(cE[1]).innerHTML === '') {
+                                console.log('pushed element to the arrCombo');
+                                console.log(cE);
+                                arrCombo.push(cE);
+                                console.log('arrCombo inside:');
+                                console.log(arrCombo);
+                        };
+                    };
+            };
+        });
+        console.log('arrCombo:');
+        console.log(arrCombo);
+        if (arrCombo.length > 0) {this.chooseCombo(arrCombo, direction)};
     };
 
-    chooseCombo() {
+    chooseCombo(arrCombo, direction) {
         // muda cores para sinalizar evento diferente, registra nas observações que há mais de um combo possível, e pede para o
-        // jogador escolher o combo que prefere fazer.
+        // // jogador escolher o combo que prefere fazer.
+        console.log('running chooseCombo with arrCombo:');
+        console.log(arrCombo);
+        if (arrCombo.length === 1) {
+            this.capture(this.selectedPiece.id, arrCombo[0][2]);
+            console.log('1 element on the array')
+        } else {
+            console.log('More than 1 element on the array.')
+            let captured = false;
+            for (let i = 0; i < arrCombo.length; i++) {
+                if (arrCombo[i][2] === direction) {
+                    this.capture(this.selectedPiece.id, direction);
+                    captured = true;
+                };
+            };
+            if (!captured) {
+                this.capture(this.selectedPiece.id, arrCombo[0][2]);
+            };
+        };
+        this.checkForCombo(this.selectedPiece.id, direction);
     };
 
     checkForMiss() {
