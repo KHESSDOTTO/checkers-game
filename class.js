@@ -68,7 +68,6 @@ class Checkers {
 
     displayCorrectBtns(selectedPiece, turn) {
         this.hideMoveBtns();
-        document.getElementById('back-to-menu-btn').classList.remove('hidden');
         if (selectedPiece.innerHTML.includes(`b`) && turn === 1) {
             if(this.isKing(selectedPiece)) {
                 this.showKingBrownBtns();
