@@ -158,8 +158,6 @@ class Checkers {
         console.log(direction);
         if (this.selectedPiece === undefined) {
             document.getElementById('message').innerHTML = 'You must select a piece to move.';
-        } else if (this.isKing(this.selectedPiece)) {
-            this.moveKing(btn);
         } else {
             const selectedId = this.selectedPiece.id;
             if (this.checkForMove(selectedId, direction)) {
@@ -447,8 +445,11 @@ class Checkers {
         let downRightId2 = `${Number(idPieceToVerify[0])+2}${Number(idPieceToVerify[1])+2}`;
         let idArrW = [[upLeftId1, upLeftId2], [upRightId1, upRightId2]];
         let idArrB = [[downLeftId1, downLeftId2], [downRightId1, downRightId2]];
+        let idArrK = [...idArrW, ...idArrB];
+        console.log('idArrK');
+        console.log(idArrK);
         let miss = 0;
-        if(pieceToVerify.innerHTML.includes('w')) {
+        if(pieceToVerify.innerHTML === 'w') {
             idArrW.forEach(cE => {
                 if (Number(cE[0][0]) <= 7 &&
                     cE[0][0] !== '-' &&
@@ -465,7 +466,7 @@ class Checkers {
                         };
                     };
             });
-        } else if (pieceToVerify.innerHTML.includes('b')) {
+        } else if (pieceToVerify.innerHTML === 'b') {
             idArrB.forEach(cE => {
                 if (Number(cE[0][0]) <= 7 &&
                     cE[0][0] !== '-' &&
@@ -481,6 +482,26 @@ class Checkers {
                         };
                     };
             });
+        } else if (this.isKing(pieceToVerify)) {
+            idArrK.forEach(cE => {
+                if (Number(cE[0][0]) <= 7 &&
+                    cE[0][0] !== '-' &&
+                    Number(cE[0][1]) <= 7 &&
+                    cE[0][1] !== '-' &&
+                    Number(cE[1][0]) <= 7 &&
+                    cE[1][0] !== '-' &&
+                    Number(cE[1][1]) <= 7 &&
+                    cE[1][1] !== '-') {
+                        if ((pieceToVerify.innerHTML.includes('w') &&
+                        document.getElementById(cE[0]).innerHTML.includes('b') &&
+                        document.getElementById(cE[1]).innerHTML === '') ||
+                        (pieceToVerify.innerHTML.includes('b') &&
+                        document.getElementById(cE[0]).innerHTML.includes('w') &&
+                        document.getElementById(cE[1]).innerHTML === '')) {
+                            miss = 1;
+                        };
+                    };
+            });
         };
         if (miss) {
             this.deletePiece(idPieceToVerify);
@@ -490,6 +511,7 @@ class Checkers {
     deletePiece(selectedId) {
         // "assopra" a peça (quando ela não captura uma adversária -> deve ser chamada caso checkForMiss seja 'true').
         document.getElementById(selectedId).innerHTML = '';
+        document.getElementById(selectedId).classList.remove('king');
     };
 
     winVerify() {
@@ -557,21 +579,5 @@ class Checkers {
         };
         return false;
     };
-
-    moveKing() {
-        // "move" com flexibilidade para andar mais de uma casa na mesma direção.
-    }
-
-    checkForMissKing() {
-        // check for miss considerando a maior flexibilidade de movimentação da dama.
-    }
-
-    checkForComboKing() {
-        // verifica a possibilidade de combo considerando que a dama pode se deslocar mais de uma casa na mesma direção.
-    }
-
-    chooseComboKing() {
-        // chooseCombo considerando a movimentação diferenciada da dama.
-    }
 };
 
