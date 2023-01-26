@@ -567,7 +567,6 @@ class Checkers {
     createKing(piece) {
         // forma uma dama quando uma peça chega ao extremo vertical oposto do tabuleiro.
         piece.innerHTML = `k${piece.innerHTML}`;
-        piece.classList.add('king');
     };
 
     isKing(selectedPiece) {
