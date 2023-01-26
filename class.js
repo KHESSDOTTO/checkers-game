@@ -151,30 +151,24 @@ class Checkers {
 
     move(btn) {
         // movimenta as peças do tabuleiro conforme for solicitado. Chama diversas funções "checks".
-        // Avisa caso nenhuma peça tenha sido selecionada quando um botão de movimento for clicado. se for uma dama, chama a
-        // função moveKing. passa a vez do jogador após a movimentação ser concluída.
+        // Passa a vez do jogador após a movimentação ser concluída.
         const direction = btn.innerHTML;
-        console.log(direction);
-        if (this.selectedPiece === undefined) {
-            document.getElementById('message').innerHTML = 'You must select a piece to move.';
-        } else {
-            const selectedId = this.selectedPiece.id;
-            if (this.checkForMove(selectedId, direction)) {
-                if (this.checkForCapture(selectedId, direction)) {
-                    this.checkForCombo(this.capture(selectedId, direction), direction);
-                    this.checkCreateKing(this.selectedPiece);
-                    this.hideMoveBtns();
-                    this.switchTurns();
-                } else {
-                    this.checkForMiss();
-                    this.simpleMove(this.selectedPiece.id, direction);
-                    this.checkCreateKing(this.selectedPiece);
-                    this.hideMoveBtns();
-                    this.switchTurns();
-                };
+        const selectedId = this.selectedPiece.id;
+        if (this.checkForMove(selectedId, direction)) {
+            if (this.checkForCapture(selectedId, direction)) {
+                this.checkForCombo(this.capture(selectedId, direction), direction);
+                this.checkCreateKing(this.selectedPiece);
+                this.hideMoveBtns();
+                this.switchTurns();
             } else {
-                this.displayMessageInvalidMove();
+                this.checkForMiss();
+                this.simpleMove(this.selectedPiece.id, direction);
+                this.checkCreateKing(this.selectedPiece);
+                this.hideMoveBtns();
+                this.switchTurns();
             };
+        } else {
+            this.displayMessageInvalidMove();
         };
     };
 
@@ -289,10 +283,6 @@ class Checkers {
         // referência para o checkForCombo.
         let capturedId;
         let newId;
-        console.log('received this selectedId');
-        console.log(selectedId);
-        console.log('received this direction');
-        console.log(direction);
         switch (direction) {
             case 'Up-Left':
                 capturedId = `${Number(selectedId[0])-1}${Number(selectedId[1])-1}`;
@@ -328,9 +318,6 @@ class Checkers {
     checkForCombo(afterCapture, direction) {
         // avalia se após uma captura, existem oportunidades de combo. Caso haja uma, realiza a captura, caso haja mais de uma
         // possibilidade, chama a função chooseCombo.
-        console.log('running checkForCombo');
-        console.log('after capture is:');
-        console.log(afterCapture);
         let arrCombo = [];
         let upLeftId1 = `${Number(afterCapture[0])-1}${Number(afterCapture[1])-1}`;
         let upRightId1 = `${Number(afterCapture[0])-1}${Number(afterCapture[1])+1}`;
@@ -381,21 +368,15 @@ class Checkers {
                     };
             };
         });
-        console.log('arrCombo:');
-        console.log(arrCombo);
         if (arrCombo.length > 0) {this.chooseCombo(arrCombo, direction)};
     };
 
     chooseCombo(arrCombo, direction) {
         // muda cores para sinalizar evento diferente, registra nas observações que há mais de um combo possível, e pede para o
         // // jogador escolher o combo que prefere fazer.
-        console.log('running chooseCombo with arrCombo:');
-        console.log(arrCombo);
         if (arrCombo.length === 1) {
             this.capture(this.selectedPiece.id, arrCombo[0][2]);
-            console.log('1 element on the array')
         } else {
-            console.log('More than 1 element on the array.')
             let captured = false;
             for (let i = 0; i < arrCombo.length; i++) {
                 if (arrCombo[i][2] === direction) {
