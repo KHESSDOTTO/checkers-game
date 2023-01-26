@@ -62,8 +62,13 @@ body * {
 }
 
 #alerts {
-    width: 28.5%;
+    width: 26%;
     height: 90%;
+    background-color: black;
+    color: white;
+    border: 10px double beige;
+    border-radius: 3em;
+    margin: 2em 2.5em 2em 2em;
 }
 
 #alerts h2 {
@@ -131,12 +136,17 @@ body * {
 }
 
 #brown-commands {
-    margin-bottom: 45vh;
+    margin-bottom: 40vh;
     text-align: center;
 }
 
 #white-commands {
     text-align: center;
+}
+
+.small-image {
+    width: 3em;
+    margin: 0;
 }
 
 .footer {
