@@ -128,17 +128,16 @@ class Checkers {
         this.turn = 0;
         document.getElementById('turn').innerHTML = "White's turn";
         document.getElementById('message').innerHTML = "";
-        this.winVerify();
     };
 
     brownTurn() {
         this.turn = 1;
         document.getElementById('turn').innerHTML = "Brown's turn";
         document.getElementById('message').innerHTML = "";
-        this.winVerify();
     };
 
     switchTurns () {
+        this.winVerify();
         if (this.turn === 1) {
             this.whiteTurn();
         }else{
@@ -516,44 +515,21 @@ class Checkers {
 
     winVerify() {
         // verifica o término do jogo após as jogadas whiteTurn e brownTurn. Caso tenha encerrado o jogo. Anuncia na tela.
-        // console.log('running winVerify');
-        // let browns = 0;
-        // let whites = 0;
-        // const squares = document.getElementById('game-section').querySelector('table').children;
-        // console.log(squares);
-        // for (let i = 0; i < squares.length; i++) {
-        //     if (squares[i].innerHTML === 'b') {
-        //         browns = 1;
-                // console.log('insideBrowns');
-                // console.log(browns);
-        //     } else if (squares[i].innerHTML === 'w') {
-        //         whites = 1;
-                // console.log('insideWhites');
-                // console.log(whites);
-        //     };
-        // };
-
-        // console.log('outsideBrowns');
-        // console.log(browns);
-        // console.log('outsideWhites');
-        // console.log(whites);
-        // if (browns === 0) {
-        //     alert(`White player wins!`);
-        //     const preGameSection = document.getElementById('pre-game-section');
-        //     const gameSection = document.getElementById('game-section');
-        //     gameSection.style.display = "none";
-        //     preGameSection.style.display = "block";
-        //     document.getElementById('alerts').querySelector('ul').innerHTML = '';
-        //     document.getElementById('board').querySelector('table').innerHTML = '';
-        // } else if (white === 0) {
-        //     alert(`Brown player wins!`);
-        //     const preGameSection = document.getElementById('pre-game-section');
-        //     const gameSection = document.getElementById('game-section');
-        //     gameSection.style.display = "none";
-        //     preGameSection.style.display = "block";
-        //     document.getElementById('alerts').querySelector('ul').innerHTML = '';
-        //     document.getElementById('board').querySelector('table').innerHTML = '';
-        // };
+        let browns = 0;
+        let whites = 0;
+        const squares = document.querySelectorAll('.square');
+        for (let i = 0; i < squares.length; i++) {
+            if (squares[i].innerHTML.includes('b')) {
+                browns = 1;
+            } else if (squares[i].innerHTML.includes('w')) {
+                whites = 1;
+            };
+        };
+        if (browns === 0) {
+            alert(`White player wins!`);
+        } else if (whites === 0) {
+            alert(`Brown player wins!`);
+        };
     };
 
     checkCreateKing(selectedPiece) {
