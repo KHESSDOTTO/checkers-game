@@ -1,58 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" href="./style.css"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <section id="pre-game-section">
-        <header>
-            <h1>Checkers</h1>
-            <button id="playBtn">Play</button>
-        </header>
-        <footer>
-            <h2><a href="" hidden>Game's rules</a></h2>
-            <a href="" hidden>How to play/commands</a>
-        </footer>
+      <header>
+        <h1>Checkers</h1>
+        <button id="playBtn">Play</button>
+      </header>
+      <footer>
+        <h2><a href="" hidden>Game's rules</a></h2>
+        <a href="" hidden>How to play/commands</a>
+      </footer>
     </section>
     <section id="game-section" hidden>
-        <article id="alerts">
-            <h2>Comments</h2>
-            <ul id="obs-list" class="unformated-list">
-                <li id="turn"></li>
-                <li id="message"></li>
-            </ul>
-        </article>
-        <article id="board">
-            <table class="board">
-            </table>
-        </article>
-        <article id="commands">
-            <div id="brown-commands">
-                <h3>Brown commands</h3>
-                <button class="up-left-btn hidden">Up-Left</button>
-                <button class="up-right-btn hidden">Up-Right</button><br>
-                <img src="./brown-piece.jpeg" alt="Peça marrom" class="small-image"/><br>
-                <button class="down-left-btn hidden">Down-Left</button>
-                <button class="down-left-btn hidden">Down-Right</button>
-            </div>
-            <div id="white-commands">
-                <h3>White commands</h3>
-                <button class="up-left-btn hidden">Up-Left</button>
-                <button class="up-right-btn hidden">Up-Right</button><br>
-                <img src="./white-piece.jpeg" alt="Peça branca" class="small-image"/><br>
-                <button class="down-left-btn hidden">Down-Left</button>
-                <button class="down-left-btn hidden">Down-Right</button>
-            </div>
-            <footer class="footer">
-                <a href="./index.html"><button id="back-to-menu-btn">Back to menu</button></a>
-            </footer>
-        </article>
+      <article id="alerts">
+        <h2>Comments</h2>
+        <ul id="obs-list" class="unformated-list">
+          <li id="turn"></li>
+          <li id="message"></li>
+        </ul>
+      </article>
+      <article id="board">
+        <table class="board"></table>
+      </article>
+      <article id="commands">
+        <div id="brown-commands">
+          <h3>Brown commands</h3>
+          <button class="up-left-btn hidden">Up-Left</button>
+          <button class="up-right-btn hidden">Up-Right</button><br />
+          <img
+            src="./images/brown-piece.jpeg"
+            alt="Peça marrom"
+            class="small-image"
+          /><br />
+          <button class="down-left-btn hidden">Down-Left</button>
+          <button class="down-left-btn hidden">Down-Right</button>
+        </div>
+        <div id="white-commands">
+          <h3>White commands</h3>
+          <button class="up-left-btn hidden">Up-Left</button>
+          <button class="up-right-btn hidden">Up-Right</button><br />
+          <img
+            src="./images/white-piece.jpeg"
+            alt="Peça branca"
+            class="small-image"
+          /><br />
+          <button class="down-left-btn hidden">Down-Left</button>
+          <button class="down-left-btn hidden">Down-Right</button>
+        </div>
+        <footer class="footer">
+          <a href="./index.html"
+            ><button id="back-to-menu-btn">Back to menu</button></a
+          >
+        </footer>
+      </article>
     </section>
     <script src="./class.js"></script>
     <script src="./script.js"></script>
-</body>
+  </body>
 </html>
