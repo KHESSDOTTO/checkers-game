@@ -1,106 +1,125 @@
-html, body {
-    margin: 0;
-    padding: 0;
+html,
+body {
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-body * {   
-    box-sizing: border-box;
+body * {
+  box-sizing: border-box;
 }
 
 #pre-game-section {
-    height: 97vh;
-    margin: 0;
-    text-align: center;
+  height: 100vh;
+  margin: 0;
+  text-align: center;
 }
 
 #pre-game-section header {
-    height: 65%;
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    justify-content: flex-end;
+  height: 65%;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 #pre-game-section h1 {
-    font-size: 5em;
-    margin: 5vh;
+  font-size: 5em;
+  margin: 5vh;
 }
 
-#game-section ul {
-    list-style-type: none;
-    font-size: 1.2em;
+#pre-game-section footer {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
+  height: 35%;
+  padding-bottom: 4em;
+  align-items: center;
 }
 
-#pre-game-section button {
+@media screen and (min-width: 767px) {
+  #pre-game-section button {
     width: 10vw;
     height: 2em;
     border-radius: 10px;
     font-weight: 600;
-}
+  }
 
-#pre-game-section footer {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: flex-end;
-    height: 35%;
-    padding-bottom: 4em;
-    align-items: center;
-}
-
-#game-section {
+  #game-section {
     display: none;
     flex-direction: row;
     flex-wrap: nowrap;
-    gap: 0;
+    gap: 3rem;
+    padding: 0 3rem;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 99vh;
-}
+    width: 100vw;
+    height: fit-content;
+  }
 
-#alerts {
-    width: 26%;
-    height: 90%;
+  #alerts {
+    width: 26vw;
+    height: 90vh;
     background-color: black;
     color: white;
     border: 10px double beige;
     border-radius: 3em;
-    margin: 2em 2.5em 2em 2em;
-}
+  }
 
-#alerts h2 {
-    text-align: center;
-    margin-bottom: 2em;
-}
-
-#alerts ul li {
-    margin-top: 1em;
-}
-
-#board {
-    width: 42%;
-    height: 100%;
+  #board {
+    width: 42vw;
+    height: 90vh;
     padding: 5vh 0;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: row;
     flex-wrap: nowrap;
-}
+  }
 
-#commands {
-    width: 27%;
-    height: 90%;
+  #game-section ul {
+    list-style-type: none;
+    font-size: 1.2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    gap: 0.5em;
+    padding: 0;
+  }
+
+  #commands {
+    width: 25vw;
+    height: 90vh;
     margin-right: 1em;
-}
+  }
 
-.board {
-    width: 30em;
-    height: 30em;
+  #move-commands {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 75vh;
+    text-align: center;
+  }
+
+  #alerts h2 {
+    text-align: center;
+    margin-bottom: 2em;
+  }
+
+  .square {
+    width: 3.7em;
+    height: 3.63em;
+    margin: 0;
+    border: 1px solid black;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .board {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -110,61 +129,148 @@ body * {
     border-collapse: collapse;
     border: 5px solid black;
     border-radius: 10px;
+  }
+
+  .footer {
+    margin-top: 5vh;
+    text-align: center;
+    padding-top: 2vh;
+  }
 }
 
-.square {
-    width: 3.7em;
-    height: 3.63em;
+@media screen and (max-width: 766px) {
+  #pre-game-section button {
+    width: 15vw;
+    height: 2em;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+
+  #game-section {
+    display: none;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    padding: 0.5rem 0 1rem;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+
+  #alerts {
+    width: 90vw;
+    height: 20vh;
+    display: flex;
+    flex-direction: row;
+    padding: 1em;
+    background-color: black;
+    color: white;
+    border: 10px double beige;
+    border-radius: 3em;
+  }
+
+  #board {
+    width: 90vw;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+
+  #commands {
+    min-width: 90vw;
+    height: 15vh;
+    margin-right: 1em;
+    padding-bottom: 10em;
+  }
+
+  #commands h3 {
+    margin: 4px 0;
+  }
+
+  #move-commands {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: center;
+  }
+
+  #game-section ul {
+    list-style-type: none;
+    font-size: 0.9em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    gap: 0.5em;
+  }
+
+  #alerts h2 {
+    text-align: center;
+    margin-bottom: 2em;
+    font-size: 1.25em;
+  }
+
+  .square {
+    width: 2.7em;
+    height: 2.95em;
     margin: 0;
     border: 1px solid black;
     box-sizing: border-box;
     text-align: center;
+  }
+
+  .board {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0;
+    border-collapse: collapse;
+    border: 5px solid black;
+    border-radius: 10px;
+  }
+
+  .footer {
+    margin: 5vh 0;
+    text-align: center;
+  }
 }
 
 .white-square {
-    background-color: white;
+  background-color: white;
 }
 
 .black-square {
-    background-color: rgb(51, 51, 51);
-    color: white;
-    font-weight: 500;
+  background-color: rgb(51, 51, 51);
+  color: white;
+  font-weight: 500;
 }
 
 .selected {
-    background-color: rgb(101, 109, 3);
-    color: yellowgreen;
-    font-weight: bolder;
-}
-
-#brown-commands {
-    margin-bottom: 40vh;
-    text-align: center;
-}
-
-#white-commands {
-    text-align: center;
+  background-color: rgb(101, 109, 3);
+  color: yellowgreen;
+  font-weight: bolder;
 }
 
 .small-image {
-    width: 3em;
-    margin: 0;
-}
-
-.footer {
-    margin-top: 5vh;
-    text-align: center;
-    padding-top: 2vh;
+  width: 3em;
+  margin: 0;
 }
 
 .hidden {
-    display: none;
+  display: none;
 }
 
 .display-block {
-    display: block;
+  display: block;
 }
 
 .display-flex {
-    display: flex;
+  display: flex;
 }
