@@ -139,7 +139,7 @@ body * {
 
 @media screen and (max-width: 766px) {
   #pre-game-section h1 {
-    font-size: 4em;
+    font-size: 3em;
     margin: 5vh;
   }
 
@@ -194,6 +194,7 @@ body * {
 
   #commands h3 {
     margin: 4px 0;
+    font-size: 0.9em;
   }
 
   #move-commands {
