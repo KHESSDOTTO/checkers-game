@@ -26,11 +26,6 @@ body * {
   justify-content: flex-end;
 }
 
-#pre-game-section h1 {
-  font-size: 5em;
-  margin: 5vh;
-}
-
 #pre-game-section footer {
   display: flex;
   flex-flow: column nowrap;
@@ -41,6 +36,10 @@ body * {
 }
 
 @media screen and (min-width: 767px) {
+  #pre-game-section h1 {
+    font-size: 5em;
+    margin: 5vh;
+  }
   #pre-game-section button {
     width: 10vw;
     height: 2em;
@@ -139,6 +138,11 @@ body * {
 }
 
 @media screen and (max-width: 766px) {
+  #pre-game-section h1 {
+    font-size: 4em;
+    margin: 5vh;
+  }
+
   #pre-game-section button {
     width: 15vw;
     height: 2em;
